@@ -94,7 +94,7 @@
     "name": "West Ham United",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 75,
+    "strength": 76,
     "prestige": 74,
     "wageBudget": 74,
     "rivalId": "chelsea"
@@ -104,7 +104,7 @@
     "name": "Crystal Palace",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 73,
+    "strength": 76,
     "prestige": 64,
     "wageBudget": 66,
     "rivalId": "brighton"
@@ -114,7 +114,7 @@
     "name": "Fulham",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 73,
+    "strength": 76,
     "prestige": 64,
     "wageBudget": 66,
     "rivalId": "brentford"
@@ -124,7 +124,7 @@
     "name": "Brentford",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 72,
+    "strength": 76,
     "prestige": 58,
     "wageBudget": 62,
     "rivalId": "fulham"
@@ -134,7 +134,7 @@
     "name": "Everton",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 71,
+    "strength": 76,
     "prestige": 76,
     "wageBudget": 70,
     "rivalId": "liverpool"
@@ -144,7 +144,7 @@
     "name": "Wolverhampton Wanderers",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 71,
+    "strength": 76,
     "prestige": 64,
     "wageBudget": 66,
     "rivalId": "aston_villa"
@@ -154,7 +154,7 @@
     "name": "AFC Bournemouth",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 71,
+    "strength": 76,
     "prestige": 56,
     "wageBudget": 62,
     "rivalId": "southampton"
@@ -164,7 +164,7 @@
     "name": "Nottingham Forest",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 70,
+    "strength": 76,
     "prestige": 66,
     "wageBudget": 66,
     "rivalId": "derby"
@@ -174,7 +174,7 @@
     "name": "Leeds United",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 69,
+    "strength": 76,
     "prestige": 72,
     "wageBudget": 68,
     "rivalId": "man_utd"
@@ -184,7 +184,7 @@
     "name": "Sunderland",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 67,
+    "strength": 76,
     "prestige": 66,
     "wageBudget": 62,
     "rivalId": "newcastle"
@@ -194,7 +194,7 @@
     "name": "Burnley",
     "leagueId": "eng.pl",
     "country": "England",
-    "strength": 66,
+    "strength": 76,
     "prestige": 56,
     "wageBudget": 58,
     "rivalId": "sunderland"
@@ -474,7 +474,7 @@
     "name": "Sevilla",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 74,
+    "strength": 75,
     "prestige": 76,
     "wageBudget": 70,
     "rivalId": "betis"
@@ -484,7 +484,7 @@
     "name": "Valencia",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 72,
+    "strength": 75,
     "prestige": 76,
     "wageBudget": 68,
     "rivalId": "villarreal"
@@ -494,7 +494,7 @@
     "name": "Celta Vigo",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 70,
+    "strength": 75,
     "prestige": 58,
     "wageBudget": 58,
     "rivalId": "deportivo"
@@ -504,7 +504,7 @@
     "name": "Girona",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 72,
+    "strength": 75,
     "prestige": 56,
     "wageBudget": 58,
     "rivalId": "valencia"
@@ -514,7 +514,7 @@
     "name": "Osasuna",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 69,
+    "strength": 75,
     "prestige": 54,
     "wageBudget": 54,
     "rivalId": "zaragoza"
@@ -524,7 +524,7 @@
     "name": "Rayo Vallecano",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 67,
+    "strength": 75,
     "prestige": 52,
     "wageBudget": 50,
     "rivalId": "atletico"
@@ -534,7 +534,7 @@
     "name": "Mallorca",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 67,
+    "strength": 75,
     "prestige": 52,
     "wageBudget": 52,
     "rivalId": "valencia"
@@ -544,7 +544,7 @@
     "name": "Getafe",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 66,
+    "strength": 75,
     "prestige": 50,
     "wageBudget": 50,
     "rivalId": "rayo"
@@ -554,7 +554,7 @@
     "name": "Deportivo Alaves",
     "leagueId": "esp.l1",
     "country": "Spain",
-    "strength": 65,
+    "strength": 75,
     "prestige": 48,
     "wageBudget": 48,
     "rivalId": "athletic"
@@ -714,7 +714,7 @@
     "name": "TSG Hoffenheim",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 71,
+    "strength": 73,
     "prestige": 54,
     "wageBudget": 62,
     "rivalId": "stuttgart"
@@ -724,7 +724,7 @@
     "name": "Union Berlin",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 70,
+    "strength": 73,
     "prestige": 56,
     "wageBudget": 56,
     "rivalId": "hertha"
@@ -734,7 +734,7 @@
     "name": "VfL Wolfsburg",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 71,
+    "strength": 73,
     "prestige": 58,
     "wageBudget": 66,
     "rivalId": "hannover"
@@ -744,7 +744,7 @@
     "name": "Borussia Monchengladbach",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 72,
+    "strength": 73,
     "prestige": 68,
     "wageBudget": 64,
     "rivalId": "koln"
@@ -754,7 +754,7 @@
     "name": "Mainz 05",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 69,
+    "strength": 73,
     "prestige": 52,
     "wageBudget": 52,
     "rivalId": "frankfurt"
@@ -764,7 +764,7 @@
     "name": "Werder Bremen",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 69,
+    "strength": 73,
     "prestige": 64,
     "wageBudget": 58,
     "rivalId": "hamburg"
@@ -774,7 +774,7 @@
     "name": "FC Augsburg",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 67,
+    "strength": 73,
     "prestige": 48,
     "wageBudget": 50,
     "rivalId": "mainz"
@@ -784,7 +784,7 @@
     "name": "VfL Bochum",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 64,
+    "strength": 73,
     "prestige": 46,
     "wageBudget": 44,
     "rivalId": "dortmund"
@@ -794,7 +794,7 @@
     "name": "1. FC Heidenheim",
     "leagueId": "ger.b1",
     "country": "Germany",
-    "strength": 63,
+    "strength": 73,
     "prestige": 42,
     "wageBudget": 42,
     "rivalId": "stuttgart"
@@ -974,7 +974,7 @@
     "name": "Torino",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 71,
+    "strength": 74,
     "prestige": 60,
     "wageBudget": 58,
     "rivalId": "juventus"
@@ -984,7 +984,7 @@
     "name": "Udinese",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 69,
+    "strength": 74,
     "prestige": 54,
     "wageBudget": 54,
     "rivalId": "verona"
@@ -994,7 +994,7 @@
     "name": "Genoa",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 68,
+    "strength": 74,
     "prestige": 56,
     "wageBudget": 52,
     "rivalId": "sampdoria"
@@ -1004,7 +1004,7 @@
     "name": "Sassuolo",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 67,
+    "strength": 74,
     "prestige": 46,
     "wageBudget": 50,
     "rivalId": "bologna"
@@ -1014,7 +1014,7 @@
     "name": "Cagliari",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 66,
+    "strength": 74,
     "prestige": 48,
     "wageBudget": 48,
     "rivalId": "verona"
@@ -1024,7 +1024,7 @@
     "name": "Hellas Verona",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 66,
+    "strength": 74,
     "prestige": 50,
     "wageBudget": 48,
     "rivalId": "brescia"
@@ -1034,7 +1034,7 @@
     "name": "Empoli",
     "leagueId": "ita.sa",
     "country": "Italy",
-    "strength": 64,
+    "strength": 74,
     "prestige": 42,
     "wageBudget": 44,
     "rivalId": "fiorentina"
@@ -1204,7 +1204,7 @@
     "name": "FC Nantes",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 69,
+    "strength": 72,
     "prestige": 58,
     "wageBudget": 56,
     "rivalId": "rennes"
@@ -1214,7 +1214,7 @@
     "name": "RC Strasbourg",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 69,
+    "strength": 72,
     "prestige": 52,
     "wageBudget": 56,
     "rivalId": "metz"
@@ -1224,7 +1224,7 @@
     "name": "Toulouse FC",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 68,
+    "strength": 72,
     "prestige": 50,
     "wageBudget": 52,
     "rivalId": "bordeaux"
@@ -1234,7 +1234,7 @@
     "name": "Stade de Reims",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 67,
+    "strength": 72,
     "prestige": 50,
     "wageBudget": 50,
     "rivalId": "troyes"
@@ -1244,7 +1244,7 @@
     "name": "Stade Brestois",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 67,
+    "strength": 72,
     "prestige": 44,
     "wageBudget": 46,
     "rivalId": "guingamp"
@@ -1254,7 +1254,7 @@
     "name": "Montpellier HSC",
     "leagueId": "fra.l1",
     "country": "France",
-    "strength": 65,
+    "strength": 72,
     "prestige": 50,
     "wageBudget": 50,
     "rivalId": "brest"

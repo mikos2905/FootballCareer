@@ -1,9 +1,11 @@
 /**
- * The single source of randomness for a career run.
+ * Randomness for a career run.
  *
- * One instance, one stream, consumed in a strictly deterministic order. Every
- * uncertain outcome in the simulation pulls from here, so a seed plus a
- * decision sequence reproduces a career exactly, byte for byte.
+ * Every draw in the simulation comes from a named substream derived from the
+ * master seed, the subsystem name and the season index — see substream() at the
+ * bottom of this file. A seed plus a decision sequence still reproduces a
+ * career exactly, but adding a draw inside the injury model no longer shifts
+ * what happens in the transfer market.
  *
  * Math.random() is banned in this directory by ESLint and by a test.
  */
@@ -178,3 +180,112 @@ export function hashString(input: string): number {
 export function randomSeed(entropy: number): number {
   return hashString(`${entropy}`);
 }
+
+// ---------------------------------------------------------------------------
+// Substreams
+// ---------------------------------------------------------------------------
+
+/**
+ * Subsystems that own their own stream. Each gets an independent PRNG per
+ * season, so a change to one subsystem's draw count cannot perturb another's
+ * results for an existing seed. That is what makes tuning possible: a shifted
+ * distribution is a balance change, never a stream artefact.
+ */
+export type SubstreamName =
+  | 'creation'
+  | 'injuries'
+  | 'transfers'
+  | 'matches'
+  | 'development'
+  | 'national'
+  | 'leagueTables';
+
+/** xmur3. Mixes an arbitrary string into a well-distributed uint32. */
+function xmur3(input: string): number {
+  let h = 1779033703 ^ input.length;
+  for (let i = 0; i < input.length; i += 1) {
+    h = Math.imul(h ^ input.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  h = Math.imul(h ^ (h >>> 16), 2246822507);
+  h = Math.imul(h ^ (h >>> 13), 3266489909);
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
+/** A fresh, independent PRNG for one subsystem in one season. */
+export function substream(masterSeed: number, name: SubstreamName, season: number): Rng {
+  return new Rng(xmur3(`${masterSeed >>> 0}|${name}|${season}`));
+}
+
+// ---------------------------------------------------------------------------
+// Count distributions
+// ---------------------------------------------------------------------------
+
+/**
+ * Gamma draw, Marsaglia-Tsang. Uses a rejection loop, so the number of raw
+ * draws it consumes varies — which is exactly why counts live behind
+ * substreams rather than on a shared stream.
+ */
+function gamma(rng: Rng, shape: number, scale: number): number {
+  if (shape < 1) {
+    // Boost a sub-unit shape up into the range the main algorithm handles.
+    const u = Math.max(rng.next(), Number.MIN_VALUE);
+    return gamma(rng, shape + 1, scale) * Math.pow(u, 1 / shape);
+  }
+  const d = shape - 1 / 3;
+  const c = 1 / Math.sqrt(9 * d);
+  for (let guard = 0; guard < 1000; guard += 1) {
+    const z = rng.normal();
+    const v = Math.pow(1 + c * z, 3);
+    if (v <= 0) continue;
+    const u = rng.next();
+    if (Math.log(u) < 0.5 * z * z + d - d * v + d * Math.log(v)) return d * v * scale;
+  }
+  return d * scale;
+}
+
+/** Poisson draw. Knuth below 30, normal approximation above it. */
+function poisson(rng: Rng, lambda: number): number {
+  if (lambda <= 0) return 0;
+  if (lambda < 30) {
+    const limit = Math.exp(-lambda);
+    let k = 0;
+    let p = 1;
+    do {
+      k += 1;
+      p *= rng.next();
+    } while (p > limit && k < 400);
+    return k - 1;
+  }
+  return Math.max(0, Math.round(lambda + Math.sqrt(lambda) * rng.normal()));
+}
+
+/**
+ * Negative binomial, as a gamma-Poisson mixture. `dispersion` is the gamma
+ * shape: lower means more spread. Variance is mean + mean^2 / dispersion.
+ */
+export function negativeBinomial(rng: Rng, mean: number, dispersion: number): number {
+  if (mean <= 0) return 0;
+  const shape = Math.max(dispersion, 0.05);
+  const lambda = gamma(rng, shape, mean / shape);
+  return poisson(rng, lambda);
+}
+
+/**
+ * An overdispersed count, parameterised the way it is actually reasoned about:
+ * `varianceRatio` is variance as a multiple of the mean. Poisson is 1.
+ *
+ * Football has hot and cold seasons well outside Poisson variance — under a
+ * plain Poisson draw every season on the table looks the same — but a fixed
+ * dispersion parameter overdoes it badly at high means, which is how you end up
+ * with sixty-goal seasons. Holding the ratio constant keeps the spread
+ * believable at three goals and at thirty.
+ */
+export function overdispersed(rng: Rng, mean: number, varianceRatio: number): number {
+  if (mean <= 0) return 0;
+  const ratio = Math.max(varianceRatio, 1.02);
+  return negativeBinomial(rng, mean, mean / (ratio - 1));
+}
+
+/** Exposed for tests and for the harness's distribution reports. */
+export const distributions = { gamma, poisson };

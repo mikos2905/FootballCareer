@@ -1,3 +1,4 @@
+import { wouldRenew as clubWouldRenew } from './transfers';
 import type { AttributeKey, CareerState, PendingEffect, StateDelta } from './types';
 import type { World } from './world';
 
@@ -119,7 +120,13 @@ const TRAINING_FOCUS: DecisionDef = {
 const CONTRACT_RENEWAL: DecisionDef = {
   id: 'contract-renewal',
   category: 'contract',
-  available: ({ state }) => state.contractYearsRemaining <= 1,
+  // Never while on loan — the loan club does not own him, and renewing there
+  // silently turns a one-year loan into a four-year stay. And never when the
+  // club does not want him: without that check a player who has not kicked a
+  // ball in five years renews his own contract indefinitely and no career ever
+  // ends by simply not being wanted.
+  available: ({ state }) =>
+    state.contractYearsRemaining <= 1 && state.parentClubId === null && clubWouldRenew(state),
   build: ({ state, world }) => {
     const club = world.club(state.clubId);
     return {

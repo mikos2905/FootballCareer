@@ -1,22 +1,312 @@
 [
-  { "id": "eng.pl", "name": "Premier League", "country": "England", "tier": 1, "strength": 95, "prestige": 98, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.eng.fa", "cup.eng.efl"] },
-  { "id": "eng.ch", "name": "EFL Championship", "country": "England", "tier": 2, "strength": 72, "prestige": 62, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.eng.fa", "cup.eng.efl"] },
-  { "id": "eng.l1", "name": "EFL League One", "country": "England", "tier": 3, "strength": 55, "prestige": 40, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.eng.fa", "cup.eng.efl"] },
-  { "id": "esp.l1", "name": "La Liga", "country": "Spain", "tier": 1, "strength": 91, "prestige": 95, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.esp.rey", "cup.esp.sup"] },
-  { "id": "esp.l2", "name": "Segunda Division", "country": "Spain", "tier": 2, "strength": 64, "prestige": 50, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.esp.rey"] },
-  { "id": "ger.b1", "name": "Bundesliga", "country": "Germany", "tier": 1, "strength": 88, "prestige": 88, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.ger.pokal", "cup.ger.sup"] },
-  { "id": "ger.b2", "name": "2. Bundesliga", "country": "Germany", "tier": 2, "strength": 66, "prestige": 52, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.ger.pokal"] },
-  { "id": "ita.sa", "name": "Serie A", "country": "Italy", "tier": 1, "strength": 89, "prestige": 90, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.ita.coppa", "cup.ita.sup"] },
-  { "id": "ita.sb", "name": "Serie B", "country": "Italy", "tier": 2, "strength": 64, "prestige": 50, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.ita.coppa"] },
-  { "id": "fra.l1", "name": "Ligue 1", "country": "France", "tier": 1, "strength": 83, "prestige": 80, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.fra.coupe", "cup.fra.tdc"] },
-  { "id": "fra.l2", "name": "Ligue 2", "country": "France", "tier": 2, "strength": 62, "prestige": 46, "continental": "none", "confederation": "UEFA", "domesticCups": ["cup.fra.coupe"] },
-  { "id": "por.pl", "name": "Primeira Liga", "country": "Portugal", "tier": 1, "strength": 75, "prestige": 70, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.por.taca", "cup.por.liga"] },
-  { "id": "ned.ed", "name": "Eredivisie", "country": "Netherlands", "tier": 1, "strength": 74, "prestige": 70, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.ned.knvb", "cup.ned.schaal"] },
-  { "id": "sco.pr", "name": "Scottish Premiership", "country": "Scotland", "tier": 1, "strength": 63, "prestige": 55, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.sco.cup", "cup.sco.league"] },
-  { "id": "bel.pl", "name": "Belgian Pro League", "country": "Belgium", "tier": 1, "strength": 68, "prestige": 55, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.bel.cup"] },
-  { "id": "tur.sl", "name": "Super Lig", "country": "Turkey", "tier": 1, "strength": 70, "prestige": 62, "continental": "elite", "confederation": "UEFA", "domesticCups": ["cup.tur.cup"] },
-  { "id": "bra.sa", "name": "Brasileirao Serie A", "country": "Brazil", "tier": 1, "strength": 76, "prestige": 72, "continental": "elite", "confederation": "CONMEBOL", "domesticCups": ["cup.bra.copa"] },
-  { "id": "arg.pd", "name": "Primera Division", "country": "Argentina", "tier": 1, "strength": 70, "prestige": 66, "continental": "elite", "confederation": "CONMEBOL", "domesticCups": ["cup.arg.copa"] },
-  { "id": "usa.ml", "name": "Major League Soccer", "country": "United States", "tier": 1, "strength": 66, "prestige": 58, "continental": "elite", "confederation": "CONCACAF", "domesticCups": ["cup.usa.open"] },
-  { "id": "sau.pl", "name": "Saudi Pro League", "country": "Saudi Arabia", "tier": 1, "strength": 67, "prestige": 60, "continental": "elite", "confederation": "AFC", "domesticCups": ["cup.sau.king"] }
+  {
+    "id": "eng.pl",
+    "name": "Premier League",
+    "country": "England",
+    "tier": 1,
+    "strength": 1,
+    "prestige": 98,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.eng.fa",
+      "cup.eng.efl"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 3
+  },
+  {
+    "id": "eng.ch",
+    "name": "EFL Championship",
+    "country": "England",
+    "tier": 2,
+    "strength": 0.77,
+    "prestige": 62,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.eng.fa",
+      "cup.eng.efl"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 3
+  },
+  {
+    "id": "eng.l1",
+    "name": "EFL League One",
+    "country": "England",
+    "tier": 3,
+    "strength": 0.6,
+    "prestige": 40,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.eng.fa",
+      "cup.eng.efl"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 0
+  },
+  {
+    "id": "esp.l1",
+    "name": "La Liga",
+    "country": "Spain",
+    "tier": 1,
+    "strength": 0.96,
+    "prestige": 95,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.esp.rey",
+      "cup.esp.sup"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 3
+  },
+  {
+    "id": "esp.l2",
+    "name": "Segunda Division",
+    "country": "Spain",
+    "tier": 2,
+    "strength": 0.69,
+    "prestige": 50,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.esp.rey"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 0
+  },
+  {
+    "id": "ger.b1",
+    "name": "Bundesliga",
+    "country": "Germany",
+    "tier": 1,
+    "strength": 0.93,
+    "prestige": 88,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.ger.pokal",
+      "cup.ger.sup"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 3
+  },
+  {
+    "id": "ger.b2",
+    "name": "2. Bundesliga",
+    "country": "Germany",
+    "tier": 2,
+    "strength": 0.71,
+    "prestige": 52,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.ger.pokal"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 0
+  },
+  {
+    "id": "ita.sa",
+    "name": "Serie A",
+    "country": "Italy",
+    "tier": 1,
+    "strength": 0.94,
+    "prestige": 90,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.ita.coppa",
+      "cup.ita.sup"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 3
+  },
+  {
+    "id": "ita.sb",
+    "name": "Serie B",
+    "country": "Italy",
+    "tier": 2,
+    "strength": 0.69,
+    "prestige": 50,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.ita.coppa"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 0
+  },
+  {
+    "id": "fra.l1",
+    "name": "Ligue 1",
+    "country": "France",
+    "tier": 1,
+    "strength": 0.88,
+    "prestige": 80,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.fra.coupe",
+      "cup.fra.tdc"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 3
+  },
+  {
+    "id": "fra.l2",
+    "name": "Ligue 2",
+    "country": "France",
+    "tier": 2,
+    "strength": 0.67,
+    "prestige": 46,
+    "continental": "none",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.fra.coupe"
+    ],
+    "promotionSpots": 3,
+    "relegationSpots": 0
+  },
+  {
+    "id": "por.pl",
+    "name": "Primeira Liga",
+    "country": "Portugal",
+    "tier": 1,
+    "strength": 0.8,
+    "prestige": 70,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.por.taca",
+      "cup.por.liga"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "ned.ed",
+    "name": "Eredivisie",
+    "country": "Netherlands",
+    "tier": 1,
+    "strength": 0.79,
+    "prestige": 70,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.ned.knvb",
+      "cup.ned.schaal"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "sco.pr",
+    "name": "Scottish Premiership",
+    "country": "Scotland",
+    "tier": 1,
+    "strength": 0.68,
+    "prestige": 55,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.sco.cup",
+      "cup.sco.league"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "bel.pl",
+    "name": "Belgian Pro League",
+    "country": "Belgium",
+    "tier": 1,
+    "strength": 0.73,
+    "prestige": 55,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.bel.cup"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "tur.sl",
+    "name": "Super Lig",
+    "country": "Turkey",
+    "tier": 1,
+    "strength": 0.75,
+    "prestige": 62,
+    "continental": "elite",
+    "confederation": "UEFA",
+    "domesticCups": [
+      "cup.tur.cup"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "bra.sa",
+    "name": "Brasileirao Serie A",
+    "country": "Brazil",
+    "tier": 1,
+    "strength": 0.81,
+    "prestige": 72,
+    "continental": "elite",
+    "confederation": "CONMEBOL",
+    "domesticCups": [
+      "cup.bra.copa"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "arg.pd",
+    "name": "Primera Division",
+    "country": "Argentina",
+    "tier": 1,
+    "strength": 0.75,
+    "prestige": 66,
+    "continental": "elite",
+    "confederation": "CONMEBOL",
+    "domesticCups": [
+      "cup.arg.copa"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "usa.ml",
+    "name": "Major League Soccer",
+    "country": "United States",
+    "tier": 1,
+    "strength": 0.71,
+    "prestige": 58,
+    "continental": "elite",
+    "confederation": "CONCACAF",
+    "domesticCups": [
+      "cup.usa.open"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  },
+  {
+    "id": "sau.pl",
+    "name": "Saudi Pro League",
+    "country": "Saudi Arabia",
+    "tier": 1,
+    "strength": 0.72,
+    "prestige": 60,
+    "continental": "elite",
+    "confederation": "AFC",
+    "domesticCups": [
+      "cup.sau.king"
+    ],
+    "promotionSpots": 0,
+    "relegationSpots": 0
+  }
 ]

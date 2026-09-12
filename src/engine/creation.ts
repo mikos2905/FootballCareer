@@ -1,9 +1,12 @@
 import { archetype } from './archetypes';
-import { position } from './positions';
-import { computeMarketValue, computeOvr, computeWage } from './ratings';
+import { initialWorldState } from './league';
+import { position, weightConcentration } from './positions';
+import { computeOvr } from './ratings';
+import { computeMarketValue, computeWage } from './transfers';
 import { clamp, Rng } from './rng';
 import {
   ATTRIBUTE_KEYS,
+  MIN_AGE,
   type Attributes,
   type CareerConfig,
   type CareerState,
@@ -12,7 +15,7 @@ import {
 } from './types';
 import type { World } from './world';
 
-export const STARTING_AGE = 16;
+export const STARTING_AGE = MIN_AGE;
 
 /** Presentation order for the draft. Seeded, so a shared seed drafts the same run. */
 export function draftOrder(seed: number, archetypeIds: readonly string[]): string[] {
@@ -53,9 +56,15 @@ function deriveCeiling(rng: Rng, config: CareerConfig, pos: PositionId): Attribu
       ceiling[key] = offered;
     }
   } else {
-    const talent = rng.around(72, 9, 48, 94);
+    // Right-skewed rather than normal: the median academy graduate tops out
+    // as a lower-league professional, and the tail that reaches the very top is
+    // thin but it has to exist.
+    const talent = 39 + 22 * Math.exp(rng.around(0, 1, -2.4, 2.4) * 0.37);
+    // Shape the ceiling around the position, normalised so that the resulting
+    // ceiling OVR is the same for a goalkeeper and a winger of equal talent.
+    const spread = 4 / weightConcentration(pos);
     for (const key of ATTRIBUTE_KEYS) {
-      ceiling[key] = talent + ((weights[key] ?? 0) - 1 / ATTRIBUTE_KEYS.length) * 90;
+      ceiling[key] = talent + ((weights[key] ?? 0) - 1 / ATTRIBUTE_KEYS.length) * spread;
     }
   }
 
@@ -68,34 +77,38 @@ function deriveCeiling(rng: Rng, config: CareerConfig, pos: PositionId): Attribu
 
 /** Where a 16-year-old actually is, relative to where he could end up. */
 function deriveStartingAttributes(rng: Rng, ceiling: Attributes): Attributes {
-  const maturity = rng.around(0.52, 0.05, 0.4, 0.66);
+  const maturity = rng.around(0.58, 0.05, 0.45, 0.72);
   const attributes = blankAttributes();
   for (const key of ATTRIBUTE_KEYS) {
     const raw = ceiling[key] * maturity + rng.around(0, 3.5, -7, 7);
-    attributes[key] = clamp(Math.round(raw), 18, Math.min(70, ceiling[key]));
+    // Floored: anyone holding a professional contract at sixteen is already a
+    // footballer. Without this, a low-ceiling player starts in the twenties,
+    // which is not a level at which anyone gets signed.
+    attributes[key] = clamp(Math.round(raw), 30, Math.min(70, Math.max(ceiling[key], 30)));
   }
   return attributes;
 }
 
 /**
- * First club. Nationality decides which leagues come looking; how good the kid
- * already is decides how high up he lands.
+ * First club.
+ *
+ * Nationality decides which leagues come looking; how good the kid already is
+ * decides how high up he lands. He is picked against club strength directly —
+ * league strength is a difficulty multiplier, not a 1-99 rating, and comparing
+ * the two is how you end up with every sixteen-year-old at a top-flight club.
  */
 function pickFirstClub(rng: Rng, world: World, nationId: string, ovr: number): Club {
   const nation = world.nation(nationId);
-  const leagues = nation.homeLeagueIds.map((id) => world.league(id));
-  const target = 30 + ovr * 0.75;
-  const league = rng.weighted(leagues, (l) => 1 / (1 + Math.abs(l.strength - target) / 8));
+  const clubs = nation.homeLeagueIds.flatMap((id) => world.clubsInLeague(id));
+  if (clubs.length === 0) throw new Error(`Nation ${nationId} has no clubs to start at`);
 
-  const clubs = world.clubsInLeague(league.id);
-  if (clubs.length === 0) throw new Error(`League ${league.id} has no clubs`);
-  const average = clubs.reduce((sum, c) => sum + c.strength, 0) / clubs.length;
-  // Academy graduates mostly come through at unglamorous clubs.
-  const clubTarget = average - 6 + (ovr - 48) * 0.6;
-  return rng.weighted(clubs, (c) => 1 / (1 + Math.abs(c.strength - clubTarget) / 6));
+  // Academy graduates come through at clubs near their own level. A better kid
+  // gets picked up by a better club; almost nobody starts at a giant.
+  const target = clamp(40 + (ovr - 45) * 1.5, 28, 88);
+  return rng.weighted(clubs, (c) => 1 / (1 + Math.abs(c.strength - target) / 6.5));
 }
 
-/** Consumes the head of the career's single RNG stream. The caller owns the Rng. */
+/** Consumes the head of the creation substream. The caller owns the Rng. */
 export function createCareer(
   rng: Rng,
   config: CareerConfig,
@@ -111,16 +124,30 @@ export function createCareer(
 
   const injuryProneness = Math.round(rng.around(30, 11, 6, 72));
   const reputation = Math.round(rng.around(8, 2.5, 3, 16));
+  // Peak age varies by position and by seed, a few years either side of the
+  // positional base. Two strikers on two seeds do not age the same way.
+  const peakAge = clamp(
+    Math.round(rng.around(position(config.position).peakAge, 1.5, 23, 33) * 2) / 2,
+    23,
+    33,
+  );
 
   const marketValue = computeMarketValue({
     ovr,
     age: STARTING_AGE,
     reputation,
     leaguePrestige: league.prestige,
-    clubPrestige: club.prestige,
+    leagueStrength: league.strength,
     contractYearsRemaining: 3,
+    recentOutput: 1,
   });
-  const wage = computeWage({ ovr, wageBudget: club.wageBudget, reputation, age: STARTING_AGE });
+  const wage = computeWage({
+    ovr,
+    wageBudget: club.wageBudget,
+    reputation,
+    age: STARTING_AGE,
+    role: 'fringe',
+  });
 
   return {
     seed: config.seed,
@@ -137,24 +164,29 @@ export function createCareer(
       age: STARTING_AGE,
       attributes,
       ceiling,
+      peakAge,
       ovr,
       marketValue,
       reputation,
     },
+    world: initialWorldState(world.data),
     clubId: club.id,
     parentClubId: null,
-    contractYearsRemaining: 3,
+    // A first professional deal, drawn so that expiries are not synchronised
+    // across every career.
+    contractYearsRemaining: rng.int(2, 4),
     wage,
     condition: {
       injuryProneness,
       wear: 0,
       form: 0,
-      injuryWeeks: 0,
+      managerRelationship: 0,
     },
+    suppression: 0,
     clubStandings: [
       {
         clubId: club.id,
-        // A boy who came through the academy starts with some goodwill in the bank.
+        // A boy who came through the academy starts with goodwill in the bank.
         standing: 32,
         seasonsServed: 0,
         appearances: 0,
@@ -171,15 +203,18 @@ export function createCareer(
       standing: 0,
       tournamentsPlayed: 0,
       tournamentsWon: 0,
+      bestFinish: null,
       committed: false,
     },
     trophies: [],
+    injuries: [],
     seasons: [],
     decisions: [],
-    poorSeasonStreak: 0,
+    barrenSeasons: 0,
     peakOvr: ovr,
     peakMarketValue: marketValue,
     retired: false,
+    endReason: null,
     firedBeats: [],
     pending: [],
   };

@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "sim": "tsx scripts/harness.ts"
+    "sim": "tsx scripts/sim.ts"
   },
   "dependencies": {
     "react": "^18.3.1",

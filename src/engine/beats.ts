@@ -1,4 +1,5 @@
-import { callUpThreshold } from './international';
+import { callUpThreshold, selectionScore } from './international';
+import { clubLeagueId } from './league';
 import type { CareerState } from './types';
 import type { World } from './world';
 
@@ -67,14 +68,22 @@ export function dueBeats(state: CareerState, world: World): BeatId[] {
   const sinceTransfer = lastTransfer === null ? state.season : state.season - lastTransfer;
   if (state.season >= 1 && sinceTransfer >= TRANSFER_WINDOW_MAX_GAP) due.push('transfer-window');
 
-  if (!hasFired(state, 'injury-window') && player.age >= 24 && player.age <= 29) {
-    // Somewhere in the mid-career, guaranteed before the window closes.
-    if (player.age >= 27 || state.condition.wear >= 35) due.push('injury-window');
+  // Guaranteed football injuries: one early, then again roughly every six
+  // seasons. Every career carries at least one, which is the point of scripting
+  // it rather than leaving it to the hazard roll.
+  const lastInjuryWindow = firedAt(state, 'injury-window');
+  if (player.age >= 17 && (lastInjuryWindow === null || state.season - lastInjuryWindow >= 6)) {
+    due.push('injury-window');
   }
 
   if (!hasFired(state, 'national-decision') && !state.national.committed) {
     const home = world.nation(player.nationId);
-    if (player.reputation >= callUpThreshold(home.strength) * 0.85) due.push('national-decision');
+    // Judged on the same basis a call-up is: how good he is, adjusted for how
+    // visible his league is. Gating this on reputation instead meant defenders
+    // and goalkeepers were never capped, because reputation is driven by goals.
+    const league = world.league(clubLeagueId(state.world, state.clubId));
+    const score = selectionScore(player.ovr, league);
+    if (score >= callUpThreshold(home.strength) - 4) due.push('national-decision');
   }
 
   return due;

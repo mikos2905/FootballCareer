@@ -1,9 +1,11 @@
 import { WORLD_DATA } from '../src/data';
 import { buildWorld } from '../src/engine/world';
 import { ARCHETYPES } from '../src/engine/archetypes';
-import { POSITION_IDS } from '../src/engine/positions';
+import { OUTFIELD_POSITION_IDS, POSITION_IDS } from '../src/engine/positions';
 import { ATTRIBUTE_KEYS, type CareerConfig, type Cadence, type Foot } from '../src/engine/types';
 import { Rng } from '../src/engine/rng';
+import { scriptedChooser, type CareerPolicy } from '../src/engine/career';
+import { makePolicy, type StrategyName } from '../src/engine/strategies';
 
 export const world = buildWorld(WORLD_DATA);
 
@@ -45,3 +47,26 @@ export function decisionsForSeed(seed: number, length = 40): number[] {
   const rng = new Rng(seed ^ 0xdecade);
   return Array.from({ length }, () => rng.int(0, 3));
 }
+
+/**
+ * A policy built from a fixed decision list plus a seeded transfer rule. Tests
+ * need decisions AND transfers pinned, since both feed the career.
+ */
+export function scriptedPolicy(seed: number, indices: readonly number[]): CareerPolicy {
+  const decide = scriptedChooser(indices);
+  const moves = new Rng(seed ^ 0x30fabc);
+  return {
+    decide,
+    transfer: ({ offers, mustMove }) => {
+      if (offers.length === 0) return -1;
+      if (mustMove) return moves.int(0, offers.length - 1);
+      return moves.chance(0.4) ? moves.int(0, offers.length - 1) : -1;
+    },
+  };
+}
+
+export function strategyPolicy(name: StrategyName, seed: number): CareerPolicy {
+  return makePolicy(name, seed);
+}
+
+export { OUTFIELD_POSITION_IDS, POSITION_IDS };
