@@ -1,0 +1,2282 @@
+[
+  {
+    "id": "man_city",
+    "name": "Manchester City",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 92,
+    "prestige": 96,
+    "wageBudget": 98,
+    "rivalId": "man_utd"
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 90,
+    "prestige": 95,
+    "wageBudget": 93,
+    "rivalId": "everton"
+  },
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 89,
+    "prestige": 92,
+    "wageBudget": 92,
+    "rivalId": "tottenham"
+  },
+  {
+    "id": "chelsea",
+    "name": "Chelsea",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 85,
+    "prestige": 92,
+    "wageBudget": 94,
+    "rivalId": "west_ham"
+  },
+  {
+    "id": "man_utd",
+    "name": "Manchester United",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 84,
+    "prestige": 97,
+    "wageBudget": 95,
+    "rivalId": "man_city"
+  },
+  {
+    "id": "tottenham",
+    "name": "Tottenham Hotspur",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 82,
+    "prestige": 87,
+    "wageBudget": 86,
+    "rivalId": "arsenal"
+  },
+  {
+    "id": "newcastle",
+    "name": "Newcastle United",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 80,
+    "prestige": 78,
+    "wageBudget": 84,
+    "rivalId": "sunderland"
+  },
+  {
+    "id": "aston_villa",
+    "name": "Aston Villa",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 79,
+    "prestige": 74,
+    "wageBudget": 78,
+    "rivalId": "wolves"
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton & Hove Albion",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 77,
+    "prestige": 68,
+    "wageBudget": 70,
+    "rivalId": "crystal_palace"
+  },
+  {
+    "id": "west_ham",
+    "name": "West Ham United",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 75,
+    "prestige": 74,
+    "wageBudget": 74,
+    "rivalId": "chelsea"
+  },
+  {
+    "id": "crystal_palace",
+    "name": "Crystal Palace",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 73,
+    "prestige": 64,
+    "wageBudget": 66,
+    "rivalId": "brighton"
+  },
+  {
+    "id": "fulham",
+    "name": "Fulham",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 73,
+    "prestige": 64,
+    "wageBudget": 66,
+    "rivalId": "brentford"
+  },
+  {
+    "id": "brentford",
+    "name": "Brentford",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 72,
+    "prestige": 58,
+    "wageBudget": 62,
+    "rivalId": "fulham"
+  },
+  {
+    "id": "everton",
+    "name": "Everton",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 71,
+    "prestige": 76,
+    "wageBudget": 70,
+    "rivalId": "liverpool"
+  },
+  {
+    "id": "wolves",
+    "name": "Wolverhampton Wanderers",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 71,
+    "prestige": 64,
+    "wageBudget": 66,
+    "rivalId": "aston_villa"
+  },
+  {
+    "id": "bournemouth",
+    "name": "AFC Bournemouth",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 71,
+    "prestige": 56,
+    "wageBudget": 62,
+    "rivalId": "southampton"
+  },
+  {
+    "id": "nottm_forest",
+    "name": "Nottingham Forest",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 70,
+    "prestige": 66,
+    "wageBudget": 66,
+    "rivalId": "derby"
+  },
+  {
+    "id": "leeds",
+    "name": "Leeds United",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 69,
+    "prestige": 72,
+    "wageBudget": 68,
+    "rivalId": "man_utd"
+  },
+  {
+    "id": "sunderland",
+    "name": "Sunderland",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 67,
+    "prestige": 66,
+    "wageBudget": 62,
+    "rivalId": "newcastle"
+  },
+  {
+    "id": "burnley",
+    "name": "Burnley",
+    "leagueId": "eng.pl",
+    "country": "England",
+    "strength": 66,
+    "prestige": 56,
+    "wageBudget": 58,
+    "rivalId": "sunderland"
+  },
+  {
+    "id": "leicester",
+    "name": "Leicester City",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 68,
+    "prestige": 70,
+    "wageBudget": 68,
+    "rivalId": "nottm_forest"
+  },
+  {
+    "id": "southampton",
+    "name": "Southampton",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 66,
+    "prestige": 62,
+    "wageBudget": 62,
+    "rivalId": "bournemouth"
+  },
+  {
+    "id": "ipswich",
+    "name": "Ipswich Town",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 63,
+    "prestige": 54,
+    "wageBudget": 54,
+    "rivalId": "norwich"
+  },
+  {
+    "id": "norwich",
+    "name": "Norwich City",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 62,
+    "prestige": 56,
+    "wageBudget": 54,
+    "rivalId": "ipswich"
+  },
+  {
+    "id": "west_brom",
+    "name": "West Bromwich Albion",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 62,
+    "prestige": 58,
+    "wageBudget": 54,
+    "rivalId": "aston_villa"
+  },
+  {
+    "id": "middlesbrough",
+    "name": "Middlesbrough",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 61,
+    "prestige": 54,
+    "wageBudget": 52,
+    "rivalId": "sunderland"
+  },
+  {
+    "id": "coventry",
+    "name": "Coventry City",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 61,
+    "prestige": 50,
+    "wageBudget": 50,
+    "rivalId": "leicester"
+  },
+  {
+    "id": "stoke",
+    "name": "Stoke City",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 59,
+    "prestige": 52,
+    "wageBudget": 50,
+    "rivalId": "derby"
+  },
+  {
+    "id": "derby",
+    "name": "Derby County",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 58,
+    "prestige": 54,
+    "wageBudget": 48,
+    "rivalId": "nottm_forest"
+  },
+  {
+    "id": "sheff_utd",
+    "name": "Sheffield United",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 61,
+    "prestige": 54,
+    "wageBudget": 52,
+    "rivalId": "coventry"
+  },
+  {
+    "id": "hull",
+    "name": "Hull City",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 57,
+    "prestige": 46,
+    "wageBudget": 46,
+    "rivalId": "leeds"
+  },
+  {
+    "id": "preston",
+    "name": "Preston North End",
+    "leagueId": "eng.ch",
+    "country": "England",
+    "strength": 56,
+    "prestige": 44,
+    "wageBudget": 44,
+    "rivalId": "blackpool"
+  },
+  {
+    "id": "bolton",
+    "name": "Bolton Wanderers",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 52,
+    "prestige": 44,
+    "wageBudget": 40,
+    "rivalId": "wigan"
+  },
+  {
+    "id": "wrexham",
+    "name": "Wrexham",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 52,
+    "prestige": 46,
+    "wageBudget": 44,
+    "rivalId": "bolton"
+  },
+  {
+    "id": "barnsley",
+    "name": "Barnsley",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 50,
+    "prestige": 38,
+    "wageBudget": 36,
+    "rivalId": "charlton"
+  },
+  {
+    "id": "charlton",
+    "name": "Charlton Athletic",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 50,
+    "prestige": 42,
+    "wageBudget": 38,
+    "rivalId": "crystal_palace"
+  },
+  {
+    "id": "blackpool",
+    "name": "Blackpool",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 49,
+    "prestige": 40,
+    "wageBudget": 36,
+    "rivalId": "preston"
+  },
+  {
+    "id": "wigan",
+    "name": "Wigan Athletic",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 48,
+    "prestige": 38,
+    "wageBudget": 34,
+    "rivalId": "bolton"
+  },
+  {
+    "id": "reading",
+    "name": "Reading",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 48,
+    "prestige": 40,
+    "wageBudget": 36,
+    "rivalId": "wigan"
+  },
+  {
+    "id": "portsmouth",
+    "name": "Portsmouth",
+    "leagueId": "eng.l1",
+    "country": "England",
+    "strength": 51,
+    "prestige": 44,
+    "wageBudget": 40,
+    "rivalId": "southampton"
+  },
+  {
+    "id": "real_madrid",
+    "name": "Real Madrid",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 93,
+    "prestige": 99,
+    "wageBudget": 99,
+    "rivalId": "barcelona"
+  },
+  {
+    "id": "barcelona",
+    "name": "Barcelona",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 90,
+    "prestige": 97,
+    "wageBudget": 94,
+    "rivalId": "real_madrid"
+  },
+  {
+    "id": "atletico",
+    "name": "Atletico Madrid",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 85,
+    "prestige": 85,
+    "wageBudget": 86,
+    "rivalId": "real_madrid"
+  },
+  {
+    "id": "athletic",
+    "name": "Athletic Club",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 80,
+    "prestige": 74,
+    "wageBudget": 72,
+    "rivalId": "real_sociedad"
+  },
+  {
+    "id": "real_sociedad",
+    "name": "Real Sociedad",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 77,
+    "prestige": 68,
+    "wageBudget": 68,
+    "rivalId": "athletic"
+  },
+  {
+    "id": "villarreal",
+    "name": "Villarreal",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 76,
+    "prestige": 68,
+    "wageBudget": 68,
+    "rivalId": "valencia"
+  },
+  {
+    "id": "betis",
+    "name": "Real Betis",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 75,
+    "prestige": 70,
+    "wageBudget": 68,
+    "rivalId": "sevilla"
+  },
+  {
+    "id": "sevilla",
+    "name": "Sevilla",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 74,
+    "prestige": 76,
+    "wageBudget": 70,
+    "rivalId": "betis"
+  },
+  {
+    "id": "valencia",
+    "name": "Valencia",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 72,
+    "prestige": 76,
+    "wageBudget": 68,
+    "rivalId": "villarreal"
+  },
+  {
+    "id": "celta",
+    "name": "Celta Vigo",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 70,
+    "prestige": 58,
+    "wageBudget": 58,
+    "rivalId": "deportivo"
+  },
+  {
+    "id": "girona",
+    "name": "Girona",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 72,
+    "prestige": 56,
+    "wageBudget": 58,
+    "rivalId": "valencia"
+  },
+  {
+    "id": "osasuna",
+    "name": "Osasuna",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 69,
+    "prestige": 54,
+    "wageBudget": 54,
+    "rivalId": "zaragoza"
+  },
+  {
+    "id": "rayo",
+    "name": "Rayo Vallecano",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 67,
+    "prestige": 52,
+    "wageBudget": 50,
+    "rivalId": "atletico"
+  },
+  {
+    "id": "mallorca",
+    "name": "Mallorca",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 67,
+    "prestige": 52,
+    "wageBudget": 52,
+    "rivalId": "valencia"
+  },
+  {
+    "id": "getafe",
+    "name": "Getafe",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 66,
+    "prestige": 50,
+    "wageBudget": 50,
+    "rivalId": "rayo"
+  },
+  {
+    "id": "alaves",
+    "name": "Deportivo Alaves",
+    "leagueId": "esp.l1",
+    "country": "Spain",
+    "strength": 65,
+    "prestige": 48,
+    "wageBudget": 48,
+    "rivalId": "athletic"
+  },
+  {
+    "id": "zaragoza",
+    "name": "Real Zaragoza",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 58,
+    "prestige": 56,
+    "wageBudget": 48,
+    "rivalId": "osasuna"
+  },
+  {
+    "id": "sporting_gijon",
+    "name": "Sporting Gijon",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 57,
+    "prestige": 52,
+    "wageBudget": 46,
+    "rivalId": "deportivo"
+  },
+  {
+    "id": "deportivo",
+    "name": "Deportivo La Coruna",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 58,
+    "prestige": 58,
+    "wageBudget": 48,
+    "rivalId": "celta"
+  },
+  {
+    "id": "malaga",
+    "name": "Malaga",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 56,
+    "prestige": 52,
+    "wageBudget": 44,
+    "rivalId": "sevilla"
+  },
+  {
+    "id": "racing",
+    "name": "Racing Santander",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 55,
+    "prestige": 46,
+    "wageBudget": 42,
+    "rivalId": "sporting_gijon"
+  },
+  {
+    "id": "levante",
+    "name": "Levante",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 57,
+    "prestige": 46,
+    "wageBudget": 44,
+    "rivalId": "valencia"
+  },
+  {
+    "id": "eibar",
+    "name": "Eibar",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 55,
+    "prestige": 42,
+    "wageBudget": 40,
+    "rivalId": "alaves"
+  },
+  {
+    "id": "huesca",
+    "name": "Huesca",
+    "leagueId": "esp.l2",
+    "country": "Spain",
+    "strength": 53,
+    "prestige": 38,
+    "wageBudget": 38,
+    "rivalId": "zaragoza"
+  },
+  {
+    "id": "bayern",
+    "name": "Bayern Munich",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 92,
+    "prestige": 96,
+    "wageBudget": 95,
+    "rivalId": "dortmund"
+  },
+  {
+    "id": "dortmund",
+    "name": "Borussia Dortmund",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 85,
+    "prestige": 88,
+    "wageBudget": 85,
+    "rivalId": "schalke"
+  },
+  {
+    "id": "leverkusen",
+    "name": "Bayer Leverkusen",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 84,
+    "prestige": 78,
+    "wageBudget": 80,
+    "rivalId": "koln"
+  },
+  {
+    "id": "leipzig",
+    "name": "RB Leipzig",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 82,
+    "prestige": 74,
+    "wageBudget": 82,
+    "rivalId": "dortmund"
+  },
+  {
+    "id": "stuttgart",
+    "name": "VfB Stuttgart",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 77,
+    "prestige": 68,
+    "wageBudget": 68,
+    "rivalId": "frankfurt"
+  },
+  {
+    "id": "frankfurt",
+    "name": "Eintracht Frankfurt",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 76,
+    "prestige": 70,
+    "wageBudget": 70,
+    "rivalId": "mainz"
+  },
+  {
+    "id": "freiburg",
+    "name": "SC Freiburg",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 73,
+    "prestige": 58,
+    "wageBudget": 58,
+    "rivalId": "stuttgart"
+  },
+  {
+    "id": "hoffenheim",
+    "name": "TSG Hoffenheim",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 71,
+    "prestige": 54,
+    "wageBudget": 62,
+    "rivalId": "stuttgart"
+  },
+  {
+    "id": "union_berlin",
+    "name": "Union Berlin",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 70,
+    "prestige": 56,
+    "wageBudget": 56,
+    "rivalId": "hertha"
+  },
+  {
+    "id": "wolfsburg",
+    "name": "VfL Wolfsburg",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 71,
+    "prestige": 58,
+    "wageBudget": 66,
+    "rivalId": "hannover"
+  },
+  {
+    "id": "gladbach",
+    "name": "Borussia Monchengladbach",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 72,
+    "prestige": 68,
+    "wageBudget": 64,
+    "rivalId": "koln"
+  },
+  {
+    "id": "mainz",
+    "name": "Mainz 05",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 69,
+    "prestige": 52,
+    "wageBudget": 52,
+    "rivalId": "frankfurt"
+  },
+  {
+    "id": "werder",
+    "name": "Werder Bremen",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 69,
+    "prestige": 64,
+    "wageBudget": 58,
+    "rivalId": "hamburg"
+  },
+  {
+    "id": "augsburg",
+    "name": "FC Augsburg",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 67,
+    "prestige": 48,
+    "wageBudget": 50,
+    "rivalId": "mainz"
+  },
+  {
+    "id": "bochum",
+    "name": "VfL Bochum",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 64,
+    "prestige": 46,
+    "wageBudget": 44,
+    "rivalId": "dortmund"
+  },
+  {
+    "id": "heidenheim",
+    "name": "1. FC Heidenheim",
+    "leagueId": "ger.b1",
+    "country": "Germany",
+    "strength": 63,
+    "prestige": 42,
+    "wageBudget": 42,
+    "rivalId": "stuttgart"
+  },
+  {
+    "id": "hamburg",
+    "name": "Hamburger SV",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 63,
+    "prestige": 68,
+    "wageBudget": 56,
+    "rivalId": "werder"
+  },
+  {
+    "id": "schalke",
+    "name": "Schalke 04",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 61,
+    "prestige": 72,
+    "wageBudget": 56,
+    "rivalId": "dortmund"
+  },
+  {
+    "id": "hertha",
+    "name": "Hertha Berlin",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 60,
+    "prestige": 60,
+    "wageBudget": 52,
+    "rivalId": "union_berlin"
+  },
+  {
+    "id": "koln",
+    "name": "1. FC Koln",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 61,
+    "prestige": 58,
+    "wageBudget": 50,
+    "rivalId": "gladbach"
+  },
+  {
+    "id": "dusseldorf",
+    "name": "Fortuna Dusseldorf",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 58,
+    "prestige": 48,
+    "wageBudget": 44,
+    "rivalId": "koln"
+  },
+  {
+    "id": "nurnberg",
+    "name": "1. FC Nurnberg",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 57,
+    "prestige": 52,
+    "wageBudget": 44,
+    "rivalId": "hannover"
+  },
+  {
+    "id": "kaiserslautern",
+    "name": "1. FC Kaiserslautern",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 56,
+    "prestige": 54,
+    "wageBudget": 42,
+    "rivalId": "mainz"
+  },
+  {
+    "id": "hannover",
+    "name": "Hannover 96",
+    "leagueId": "ger.b2",
+    "country": "Germany",
+    "strength": 57,
+    "prestige": 50,
+    "wageBudget": 44,
+    "rivalId": "nurnberg"
+  },
+  {
+    "id": "inter",
+    "name": "Inter Milan",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 88,
+    "prestige": 90,
+    "wageBudget": 88,
+    "rivalId": "milan"
+  },
+  {
+    "id": "milan",
+    "name": "AC Milan",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 85,
+    "prestige": 92,
+    "wageBudget": 86,
+    "rivalId": "inter"
+  },
+  {
+    "id": "juventus",
+    "name": "Juventus",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 85,
+    "prestige": 93,
+    "wageBudget": 88,
+    "rivalId": "torino"
+  },
+  {
+    "id": "napoli",
+    "name": "Napoli",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 84,
+    "prestige": 80,
+    "wageBudget": 82,
+    "rivalId": "roma"
+  },
+  {
+    "id": "atalanta",
+    "name": "Atalanta",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 81,
+    "prestige": 68,
+    "wageBudget": 72,
+    "rivalId": "brescia"
+  },
+  {
+    "id": "roma",
+    "name": "AS Roma",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 79,
+    "prestige": 82,
+    "wageBudget": 78,
+    "rivalId": "lazio"
+  },
+  {
+    "id": "lazio",
+    "name": "Lazio",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 77,
+    "prestige": 74,
+    "wageBudget": 72,
+    "rivalId": "roma"
+  },
+  {
+    "id": "fiorentina",
+    "name": "Fiorentina",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 76,
+    "prestige": 70,
+    "wageBudget": 70,
+    "rivalId": "juventus"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 74,
+    "prestige": 58,
+    "wageBudget": 60,
+    "rivalId": "fiorentina"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 71,
+    "prestige": 60,
+    "wageBudget": 58,
+    "rivalId": "juventus"
+  },
+  {
+    "id": "udinese",
+    "name": "Udinese",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 69,
+    "prestige": 54,
+    "wageBudget": 54,
+    "rivalId": "verona"
+  },
+  {
+    "id": "genoa",
+    "name": "Genoa",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 68,
+    "prestige": 56,
+    "wageBudget": 52,
+    "rivalId": "sampdoria"
+  },
+  {
+    "id": "sassuolo",
+    "name": "Sassuolo",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 67,
+    "prestige": 46,
+    "wageBudget": 50,
+    "rivalId": "bologna"
+  },
+  {
+    "id": "cagliari",
+    "name": "Cagliari",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 66,
+    "prestige": 48,
+    "wageBudget": 48,
+    "rivalId": "verona"
+  },
+  {
+    "id": "verona",
+    "name": "Hellas Verona",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 66,
+    "prestige": 50,
+    "wageBudget": 48,
+    "rivalId": "brescia"
+  },
+  {
+    "id": "empoli",
+    "name": "Empoli",
+    "leagueId": "ita.sa",
+    "country": "Italy",
+    "strength": 64,
+    "prestige": 42,
+    "wageBudget": 44,
+    "rivalId": "fiorentina"
+  },
+  {
+    "id": "sampdoria",
+    "name": "Sampdoria",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 58,
+    "prestige": 58,
+    "wageBudget": 48,
+    "rivalId": "genoa"
+  },
+  {
+    "id": "palermo",
+    "name": "Palermo",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 58,
+    "prestige": 52,
+    "wageBudget": 48,
+    "rivalId": "sampdoria"
+  },
+  {
+    "id": "parma",
+    "name": "Parma",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 60,
+    "prestige": 54,
+    "wageBudget": 48,
+    "rivalId": "palermo"
+  },
+  {
+    "id": "bari",
+    "name": "Bari",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 56,
+    "prestige": 46,
+    "wageBudget": 42,
+    "rivalId": "brescia"
+  },
+  {
+    "id": "brescia",
+    "name": "Brescia",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 55,
+    "prestige": 44,
+    "wageBudget": 40,
+    "rivalId": "atalanta"
+  },
+  {
+    "id": "spezia",
+    "name": "Spezia",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 55,
+    "prestige": 40,
+    "wageBudget": 40,
+    "rivalId": "genoa"
+  },
+  {
+    "id": "pisa",
+    "name": "Pisa",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 54,
+    "prestige": 40,
+    "wageBudget": 38,
+    "rivalId": "brescia"
+  },
+  {
+    "id": "catanzaro",
+    "name": "Catanzaro",
+    "leagueId": "ita.sb",
+    "country": "Italy",
+    "strength": 52,
+    "prestige": 36,
+    "wageBudget": 34,
+    "rivalId": "pisa"
+  },
+  {
+    "id": "psg",
+    "name": "Paris Saint-Germain",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 89,
+    "prestige": 92,
+    "wageBudget": 96,
+    "rivalId": "marseille"
+  },
+  {
+    "id": "marseille",
+    "name": "Olympique Marseille",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 78,
+    "prestige": 80,
+    "wageBudget": 76,
+    "rivalId": "psg"
+  },
+  {
+    "id": "monaco",
+    "name": "AS Monaco",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 79,
+    "prestige": 74,
+    "wageBudget": 78,
+    "rivalId": "nice"
+  },
+  {
+    "id": "lyon",
+    "name": "Olympique Lyonnais",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 76,
+    "prestige": 78,
+    "wageBudget": 74,
+    "rivalId": "saint_etienne"
+  },
+  {
+    "id": "lille",
+    "name": "LOSC Lille",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 76,
+    "prestige": 68,
+    "wageBudget": 68,
+    "rivalId": "lens"
+  },
+  {
+    "id": "nice",
+    "name": "OGC Nice",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 74,
+    "prestige": 62,
+    "wageBudget": 66,
+    "rivalId": "monaco"
+  },
+  {
+    "id": "rennes",
+    "name": "Stade Rennais",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 74,
+    "prestige": 62,
+    "wageBudget": 66,
+    "rivalId": "nantes"
+  },
+  {
+    "id": "lens",
+    "name": "RC Lens",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 73,
+    "prestige": 60,
+    "wageBudget": 60,
+    "rivalId": "lille"
+  },
+  {
+    "id": "nantes",
+    "name": "FC Nantes",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 69,
+    "prestige": 58,
+    "wageBudget": 56,
+    "rivalId": "rennes"
+  },
+  {
+    "id": "strasbourg",
+    "name": "RC Strasbourg",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 69,
+    "prestige": 52,
+    "wageBudget": 56,
+    "rivalId": "metz"
+  },
+  {
+    "id": "toulouse",
+    "name": "Toulouse FC",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 68,
+    "prestige": 50,
+    "wageBudget": 52,
+    "rivalId": "bordeaux"
+  },
+  {
+    "id": "reims",
+    "name": "Stade de Reims",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 67,
+    "prestige": 50,
+    "wageBudget": 50,
+    "rivalId": "troyes"
+  },
+  {
+    "id": "brest",
+    "name": "Stade Brestois",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 67,
+    "prestige": 44,
+    "wageBudget": 46,
+    "rivalId": "guingamp"
+  },
+  {
+    "id": "montpellier",
+    "name": "Montpellier HSC",
+    "leagueId": "fra.l1",
+    "country": "France",
+    "strength": 65,
+    "prestige": 50,
+    "wageBudget": 50,
+    "rivalId": "brest"
+  },
+  {
+    "id": "saint_etienne",
+    "name": "AS Saint-Etienne",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 60,
+    "prestige": 66,
+    "wageBudget": 52,
+    "rivalId": "lyon"
+  },
+  {
+    "id": "bordeaux",
+    "name": "Girondins de Bordeaux",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 58,
+    "prestige": 64,
+    "wageBudget": 50,
+    "rivalId": "toulouse"
+  },
+  {
+    "id": "auxerre",
+    "name": "AJ Auxerre",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 58,
+    "prestige": 48,
+    "wageBudget": 44,
+    "rivalId": "bordeaux"
+  },
+  {
+    "id": "caen",
+    "name": "SM Caen",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 55,
+    "prestige": 44,
+    "wageBudget": 40,
+    "rivalId": "rennes"
+  },
+  {
+    "id": "guingamp",
+    "name": "EA Guingamp",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 54,
+    "prestige": 42,
+    "wageBudget": 38,
+    "rivalId": "brest"
+  },
+  {
+    "id": "metz",
+    "name": "FC Metz",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 57,
+    "prestige": 46,
+    "wageBudget": 42,
+    "rivalId": "strasbourg"
+  },
+  {
+    "id": "troyes",
+    "name": "ESTAC Troyes",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 54,
+    "prestige": 40,
+    "wageBudget": 38,
+    "rivalId": "reims"
+  },
+  {
+    "id": "amiens",
+    "name": "Amiens SC",
+    "leagueId": "fra.l2",
+    "country": "France",
+    "strength": 53,
+    "prestige": 38,
+    "wageBudget": 36,
+    "rivalId": "lens"
+  },
+  {
+    "id": "benfica",
+    "name": "Benfica",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 80,
+    "prestige": 80,
+    "wageBudget": 74,
+    "rivalId": "porto"
+  },
+  {
+    "id": "porto",
+    "name": "FC Porto",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 80,
+    "prestige": 80,
+    "wageBudget": 74,
+    "rivalId": "benfica"
+  },
+  {
+    "id": "sporting",
+    "name": "Sporting CP",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 79,
+    "prestige": 76,
+    "wageBudget": 72,
+    "rivalId": "benfica"
+  },
+  {
+    "id": "braga",
+    "name": "SC Braga",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 72,
+    "prestige": 58,
+    "wageBudget": 58,
+    "rivalId": "porto"
+  },
+  {
+    "id": "vitoria_guimaraes",
+    "name": "Vitoria Guimaraes",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 68,
+    "prestige": 50,
+    "wageBudget": 48,
+    "rivalId": "braga"
+  },
+  {
+    "id": "boavista",
+    "name": "Boavista",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 62,
+    "prestige": 46,
+    "wageBudget": 42,
+    "rivalId": "porto"
+  },
+  {
+    "id": "rio_ave",
+    "name": "Rio Ave",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 61,
+    "prestige": 40,
+    "wageBudget": 38,
+    "rivalId": "braga"
+  },
+  {
+    "id": "famalicao",
+    "name": "Famalicao",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 62,
+    "prestige": 38,
+    "wageBudget": 38,
+    "rivalId": "vitoria_guimaraes"
+  },
+  {
+    "id": "estoril",
+    "name": "Estoril Praia",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 60,
+    "prestige": 36,
+    "wageBudget": 36,
+    "rivalId": "sporting"
+  },
+  {
+    "id": "gil_vicente",
+    "name": "Gil Vicente",
+    "leagueId": "por.pl",
+    "country": "Portugal",
+    "strength": 59,
+    "prestige": 34,
+    "wageBudget": 34,
+    "rivalId": "braga"
+  },
+  {
+    "id": "ajax",
+    "name": "Ajax",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 78,
+    "prestige": 84,
+    "wageBudget": 74,
+    "rivalId": "feyenoord"
+  },
+  {
+    "id": "psv",
+    "name": "PSV Eindhoven",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 78,
+    "prestige": 76,
+    "wageBudget": 72,
+    "rivalId": "ajax"
+  },
+  {
+    "id": "feyenoord",
+    "name": "Feyenoord",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 76,
+    "prestige": 72,
+    "wageBudget": 68,
+    "rivalId": "ajax"
+  },
+  {
+    "id": "az",
+    "name": "AZ Alkmaar",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 70,
+    "prestige": 56,
+    "wageBudget": 56,
+    "rivalId": "ajax"
+  },
+  {
+    "id": "twente",
+    "name": "FC Twente",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 68,
+    "prestige": 52,
+    "wageBudget": 52,
+    "rivalId": "az"
+  },
+  {
+    "id": "utrecht",
+    "name": "FC Utrecht",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 66,
+    "prestige": 48,
+    "wageBudget": 48,
+    "rivalId": "ajax"
+  },
+  {
+    "id": "vitesse",
+    "name": "Vitesse",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 63,
+    "prestige": 44,
+    "wageBudget": 44,
+    "rivalId": "nec"
+  },
+  {
+    "id": "heerenveen",
+    "name": "SC Heerenveen",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 62,
+    "prestige": 42,
+    "wageBudget": 42,
+    "rivalId": "nec"
+  },
+  {
+    "id": "sparta",
+    "name": "Sparta Rotterdam",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 61,
+    "prestige": 42,
+    "wageBudget": 40,
+    "rivalId": "feyenoord"
+  },
+  {
+    "id": "nec",
+    "name": "NEC Nijmegen",
+    "leagueId": "ned.ed",
+    "country": "Netherlands",
+    "strength": 62,
+    "prestige": 40,
+    "wageBudget": 40,
+    "rivalId": "vitesse"
+  },
+  {
+    "id": "celtic",
+    "name": "Celtic",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 72,
+    "prestige": 72,
+    "wageBudget": 64,
+    "rivalId": "rangers"
+  },
+  {
+    "id": "rangers",
+    "name": "Rangers",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 70,
+    "prestige": 72,
+    "wageBudget": 62,
+    "rivalId": "celtic"
+  },
+  {
+    "id": "hearts",
+    "name": "Heart of Midlothian",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 60,
+    "prestige": 50,
+    "wageBudget": 46,
+    "rivalId": "hibernian"
+  },
+  {
+    "id": "hibernian",
+    "name": "Hibernian",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 58,
+    "prestige": 48,
+    "wageBudget": 44,
+    "rivalId": "hearts"
+  },
+  {
+    "id": "aberdeen",
+    "name": "Aberdeen",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 60,
+    "prestige": 52,
+    "wageBudget": 46,
+    "rivalId": "rangers"
+  },
+  {
+    "id": "dundee_utd",
+    "name": "Dundee United",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 56,
+    "prestige": 42,
+    "wageBudget": 38,
+    "rivalId": "motherwell"
+  },
+  {
+    "id": "kilmarnock",
+    "name": "Kilmarnock",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 54,
+    "prestige": 38,
+    "wageBudget": 34,
+    "rivalId": "motherwell"
+  },
+  {
+    "id": "motherwell",
+    "name": "Motherwell",
+    "leagueId": "sco.pr",
+    "country": "Scotland",
+    "strength": 55,
+    "prestige": 40,
+    "wageBudget": 36,
+    "rivalId": "dundee_utd"
+  },
+  {
+    "id": "club_brugge",
+    "name": "Club Brugge",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 73,
+    "prestige": 64,
+    "wageBudget": 62,
+    "rivalId": "anderlecht"
+  },
+  {
+    "id": "anderlecht",
+    "name": "RSC Anderlecht",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 70,
+    "prestige": 66,
+    "wageBudget": 60,
+    "rivalId": "club_brugge"
+  },
+  {
+    "id": "genk",
+    "name": "KRC Genk",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 69,
+    "prestige": 54,
+    "wageBudget": 54,
+    "rivalId": "standard"
+  },
+  {
+    "id": "gent",
+    "name": "KAA Gent",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 68,
+    "prestige": 52,
+    "wageBudget": 52,
+    "rivalId": "club_brugge"
+  },
+  {
+    "id": "antwerp",
+    "name": "Royal Antwerp",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 68,
+    "prestige": 52,
+    "wageBudget": 52,
+    "rivalId": "gent"
+  },
+  {
+    "id": "standard",
+    "name": "Standard Liege",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 65,
+    "prestige": 56,
+    "wageBudget": 50,
+    "rivalId": "anderlecht"
+  },
+  {
+    "id": "union_sg",
+    "name": "Union Saint-Gilloise",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 69,
+    "prestige": 46,
+    "wageBudget": 48,
+    "rivalId": "anderlecht"
+  },
+  {
+    "id": "cercle",
+    "name": "Cercle Brugge",
+    "leagueId": "bel.pl",
+    "country": "Belgium",
+    "strength": 62,
+    "prestige": 38,
+    "wageBudget": 38,
+    "rivalId": "club_brugge"
+  },
+  {
+    "id": "galatasaray",
+    "name": "Galatasaray",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 76,
+    "prestige": 72,
+    "wageBudget": 72,
+    "rivalId": "fenerbahce"
+  },
+  {
+    "id": "fenerbahce",
+    "name": "Fenerbahce",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 75,
+    "prestige": 72,
+    "wageBudget": 72,
+    "rivalId": "galatasaray"
+  },
+  {
+    "id": "besiktas",
+    "name": "Besiktas",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 72,
+    "prestige": 68,
+    "wageBudget": 66,
+    "rivalId": "galatasaray"
+  },
+  {
+    "id": "trabzonspor",
+    "name": "Trabzonspor",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 69,
+    "prestige": 60,
+    "wageBudget": 58,
+    "rivalId": "fenerbahce"
+  },
+  {
+    "id": "basaksehir",
+    "name": "Istanbul Basaksehir",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 66,
+    "prestige": 44,
+    "wageBudget": 52,
+    "rivalId": "galatasaray"
+  },
+  {
+    "id": "sivasspor",
+    "name": "Sivasspor",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 61,
+    "prestige": 38,
+    "wageBudget": 40,
+    "rivalId": "konyaspor"
+  },
+  {
+    "id": "konyaspor",
+    "name": "Konyaspor",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 61,
+    "prestige": 38,
+    "wageBudget": 40,
+    "rivalId": "sivasspor"
+  },
+  {
+    "id": "alanyaspor",
+    "name": "Alanyaspor",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 60,
+    "prestige": 36,
+    "wageBudget": 40,
+    "rivalId": "kasimpasa"
+  },
+  {
+    "id": "kasimpasa",
+    "name": "Kasimpasa",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 59,
+    "prestige": 34,
+    "wageBudget": 38,
+    "rivalId": "basaksehir"
+  },
+  {
+    "id": "rizespor",
+    "name": "Caykur Rizespor",
+    "leagueId": "tur.sl",
+    "country": "Turkey",
+    "strength": 58,
+    "prestige": 34,
+    "wageBudget": 36,
+    "rivalId": "trabzonspor"
+  },
+  {
+    "id": "flamengo",
+    "name": "Flamengo",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 78,
+    "prestige": 80,
+    "wageBudget": 74,
+    "rivalId": "fluminense"
+  },
+  {
+    "id": "palmeiras",
+    "name": "Palmeiras",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 78,
+    "prestige": 76,
+    "wageBudget": 72,
+    "rivalId": "corinthians"
+  },
+  {
+    "id": "sao_paulo",
+    "name": "Sao Paulo",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 75,
+    "prestige": 74,
+    "wageBudget": 68,
+    "rivalId": "corinthians"
+  },
+  {
+    "id": "corinthians",
+    "name": "Corinthians",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 73,
+    "prestige": 76,
+    "wageBudget": 68,
+    "rivalId": "palmeiras"
+  },
+  {
+    "id": "fluminense",
+    "name": "Fluminense",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 73,
+    "prestige": 66,
+    "wageBudget": 62,
+    "rivalId": "flamengo"
+  },
+  {
+    "id": "botafogo",
+    "name": "Botafogo",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 74,
+    "prestige": 62,
+    "wageBudget": 64,
+    "rivalId": "vasco"
+  },
+  {
+    "id": "gremio",
+    "name": "Gremio",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 73,
+    "prestige": 68,
+    "wageBudget": 64,
+    "rivalId": "internacional"
+  },
+  {
+    "id": "internacional",
+    "name": "Internacional",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 72,
+    "prestige": 66,
+    "wageBudget": 62,
+    "rivalId": "gremio"
+  },
+  {
+    "id": "atletico_mg",
+    "name": "Atletico Mineiro",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 73,
+    "prestige": 64,
+    "wageBudget": 64,
+    "rivalId": "cruzeiro"
+  },
+  {
+    "id": "cruzeiro",
+    "name": "Cruzeiro",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 71,
+    "prestige": 64,
+    "wageBudget": 60,
+    "rivalId": "atletico_mg"
+  },
+  {
+    "id": "santos",
+    "name": "Santos",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 69,
+    "prestige": 72,
+    "wageBudget": 58,
+    "rivalId": "sao_paulo"
+  },
+  {
+    "id": "vasco",
+    "name": "Vasco da Gama",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 68,
+    "prestige": 66,
+    "wageBudget": 56,
+    "rivalId": "flamengo"
+  },
+  {
+    "id": "bahia",
+    "name": "Bahia",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 69,
+    "prestige": 54,
+    "wageBudget": 56,
+    "rivalId": "fortaleza"
+  },
+  {
+    "id": "fortaleza",
+    "name": "Fortaleza",
+    "leagueId": "bra.sa",
+    "country": "Brazil",
+    "strength": 69,
+    "prestige": 50,
+    "wageBudget": 54,
+    "rivalId": "bahia"
+  },
+  {
+    "id": "river",
+    "name": "River Plate",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 74,
+    "prestige": 82,
+    "wageBudget": 68,
+    "rivalId": "boca"
+  },
+  {
+    "id": "boca",
+    "name": "Boca Juniors",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 73,
+    "prestige": 84,
+    "wageBudget": 68,
+    "rivalId": "river"
+  },
+  {
+    "id": "racing_club",
+    "name": "Racing Club",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 69,
+    "prestige": 64,
+    "wageBudget": 58,
+    "rivalId": "independiente"
+  },
+  {
+    "id": "independiente",
+    "name": "Independiente",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 67,
+    "prestige": 66,
+    "wageBudget": 56,
+    "rivalId": "racing_club"
+  },
+  {
+    "id": "san_lorenzo",
+    "name": "San Lorenzo",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 66,
+    "prestige": 58,
+    "wageBudget": 52,
+    "rivalId": "huracan"
+  },
+  {
+    "id": "velez",
+    "name": "Velez Sarsfield",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 67,
+    "prestige": 56,
+    "wageBudget": 52,
+    "rivalId": "river"
+  },
+  {
+    "id": "estudiantes",
+    "name": "Estudiantes",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 67,
+    "prestige": 56,
+    "wageBudget": 52,
+    "rivalId": "independiente"
+  },
+  {
+    "id": "newells",
+    "name": "Newell's Old Boys",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 65,
+    "prestige": 54,
+    "wageBudget": 48,
+    "rivalId": "rosario_central"
+  },
+  {
+    "id": "rosario_central",
+    "name": "Rosario Central",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 65,
+    "prestige": 54,
+    "wageBudget": 48,
+    "rivalId": "newells"
+  },
+  {
+    "id": "lanus",
+    "name": "Lanus",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 64,
+    "prestige": 46,
+    "wageBudget": 44,
+    "rivalId": "huracan"
+  },
+  {
+    "id": "huracan",
+    "name": "Huracan",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 63,
+    "prestige": 46,
+    "wageBudget": 42,
+    "rivalId": "san_lorenzo"
+  },
+  {
+    "id": "talleres",
+    "name": "Talleres",
+    "leagueId": "arg.pd",
+    "country": "Argentina",
+    "strength": 66,
+    "prestige": 48,
+    "wageBudget": 48,
+    "rivalId": "san_lorenzo"
+  },
+  {
+    "id": "inter_miami",
+    "name": "Inter Miami",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 68,
+    "prestige": 68,
+    "wageBudget": 70,
+    "rivalId": "lafc"
+  },
+  {
+    "id": "lafc",
+    "name": "Los Angeles FC",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 68,
+    "prestige": 58,
+    "wageBudget": 64,
+    "rivalId": "la_galaxy"
+  },
+  {
+    "id": "la_galaxy",
+    "name": "LA Galaxy",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 66,
+    "prestige": 60,
+    "wageBudget": 62,
+    "rivalId": "lafc"
+  },
+  {
+    "id": "seattle",
+    "name": "Seattle Sounders",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 66,
+    "prestige": 56,
+    "wageBudget": 58,
+    "rivalId": "portland"
+  },
+  {
+    "id": "atlanta_utd",
+    "name": "Atlanta United",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 64,
+    "prestige": 54,
+    "wageBudget": 58,
+    "rivalId": "nycfc"
+  },
+  {
+    "id": "nycfc",
+    "name": "New York City FC",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 64,
+    "prestige": 52,
+    "wageBudget": 56,
+    "rivalId": "red_bulls"
+  },
+  {
+    "id": "red_bulls",
+    "name": "New York Red Bulls",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 63,
+    "prestige": 50,
+    "wageBudget": 54,
+    "rivalId": "nycfc"
+  },
+  {
+    "id": "philadelphia",
+    "name": "Philadelphia Union",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 65,
+    "prestige": 48,
+    "wageBudget": 50,
+    "rivalId": "red_bulls"
+  },
+  {
+    "id": "columbus",
+    "name": "Columbus Crew",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 66,
+    "prestige": 50,
+    "wageBudget": 52,
+    "rivalId": "la_galaxy"
+  },
+  {
+    "id": "portland",
+    "name": "Portland Timbers",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 62,
+    "prestige": 48,
+    "wageBudget": 50,
+    "rivalId": "seattle"
+  },
+  {
+    "id": "toronto",
+    "name": "Toronto FC",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 60,
+    "prestige": 50,
+    "wageBudget": 52,
+    "rivalId": "austin"
+  },
+  {
+    "id": "austin",
+    "name": "Austin FC",
+    "leagueId": "usa.ml",
+    "country": "United States",
+    "strength": 61,
+    "prestige": 42,
+    "wageBudget": 48,
+    "rivalId": "portland"
+  },
+  {
+    "id": "al_hilal",
+    "name": "Al Hilal",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 74,
+    "prestige": 66,
+    "wageBudget": 88,
+    "rivalId": "al_nassr"
+  },
+  {
+    "id": "al_nassr",
+    "name": "Al Nassr",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 72,
+    "prestige": 64,
+    "wageBudget": 86,
+    "rivalId": "al_hilal"
+  },
+  {
+    "id": "al_ittihad",
+    "name": "Al Ittihad",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 71,
+    "prestige": 60,
+    "wageBudget": 82,
+    "rivalId": "al_ahli"
+  },
+  {
+    "id": "al_ahli",
+    "name": "Al Ahli",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 70,
+    "prestige": 58,
+    "wageBudget": 80,
+    "rivalId": "al_ittihad"
+  },
+  {
+    "id": "al_shabab",
+    "name": "Al Shabab",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 64,
+    "prestige": 48,
+    "wageBudget": 62,
+    "rivalId": "al_hilal"
+  },
+  {
+    "id": "al_ettifaq",
+    "name": "Al Ettifaq",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 62,
+    "prestige": 44,
+    "wageBudget": 60,
+    "rivalId": "al_taawoun"
+  },
+  {
+    "id": "al_taawoun",
+    "name": "Al Taawoun",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 61,
+    "prestige": 38,
+    "wageBudget": 52,
+    "rivalId": "al_fateh"
+  },
+  {
+    "id": "al_fateh",
+    "name": "Al Fateh",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 60,
+    "prestige": 36,
+    "wageBudget": 50,
+    "rivalId": "al_taawoun"
+  },
+  {
+    "id": "al_khaleej",
+    "name": "Al Khaleej",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 58,
+    "prestige": 32,
+    "wageBudget": 46,
+    "rivalId": "al_fateh"
+  },
+  {
+    "id": "al_riyadh",
+    "name": "Al Riyadh",
+    "leagueId": "sau.pl",
+    "country": "Saudi Arabia",
+    "strength": 57,
+    "prestige": 32,
+    "wageBudget": 46,
+    "rivalId": "al_shabab"
+  }
+]
