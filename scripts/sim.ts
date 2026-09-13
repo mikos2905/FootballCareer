@@ -4,6 +4,7 @@ import { STRATEGY_NAMES, type StrategyName } from '../src/engine/strategies';
 import { TIER_LABELS, type EndingTier } from '../src/engine/endings';
 import { isCareerAltering } from '../src/engine/injuries';
 import type { Cadence, PositionId } from '../src/engine/types';
+import { allCardIds, printCardDetail, printHealthTable, runBalance } from './lib/balance';
 import { bimodalityFlag, describe, histogram, money, pad, percentile } from './lib/format';
 import { metricsFor, runMany, runOne, world, type RunOptions } from './lib/run';
 import type { Career } from '../src/engine/career';
@@ -24,9 +25,12 @@ interface Args {
   strategy: StrategyName | 'mixed';
   nation: string;
   cadence: Cadence;
-  report: 'summary' | 'career' | 'histogram';
+  report: 'summary' | 'career' | 'histogram' | 'cards' | 'dominance';
   seed: number | null;
   metric: string;
+  card: string | null;
+  samples: number;
+  continuations: number;
 }
 
 function parseArgs(argv: string[]): Args {
@@ -40,6 +44,9 @@ function parseArgs(argv: string[]): Args {
     report: 'summary',
     seed: null,
     metric: 'peakOvr',
+    card: null,
+    samples: 45,
+    continuations: 16,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const token = argv[i] as string;
@@ -86,6 +93,15 @@ function parseArgs(argv: string[]): Args {
       case 'metric':
         args.metric = consume();
         break;
+      case 'card':
+        args.card = consume();
+        break;
+      case 'samples':
+        args.samples = Number(consume());
+        break;
+      case 'continuations':
+        args.continuations = Number(consume());
+        break;
       case 'help':
         printUsage();
         process.exit(0);
@@ -114,9 +130,15 @@ Usage: npm run sim -- [options]
   --strategy S       ${STRATEGY_NAMES.join('|')}|mixed
   --nation ID        e.g. eng, bra, mixed              (default mixed)
   --cadence C        full|standard|express             (default full)
-  --report R         summary | career | histogram      (default summary)
+  --report R         summary | career | histogram | cards | dominance
   --seed N           which career to print, with --report career
   --metric M         which metric to bin, with --report histogram
+  --card ID          which card, with --report dominance
+  --samples N        sampled states per card        (default 45)
+  --continuations N  futures per state per option   (default 16)
+
+Balance reports are Monte Carlo and cost roughly
+samples x options x continuations careers per card.
 `);
 }
 
@@ -355,8 +377,42 @@ function reportHistogram(args: Args): void {
   console.log(`bimodality: ${bimodalityFlag(values) ? 'FLAGGED' : 'unimodal'}\n`);
 }
 
+function reportCards(args: Args): void {
+  const ids = args.card ? [args.card] : allCardIds();
+  const started = Date.now();
+  const reports = runBalance(
+    {
+      cardIds: ids,
+      samples: args.samples,
+      continuations: args.continuations,
+      pool: Math.max(60, args.samples * 3),
+      strategies: args.strategy === 'mixed' ? [...STRATEGY_NAMES] : [args.strategy],
+      run: toOptions(args),
+    },
+    (id) => process.stderr.write(`\r  analysing ${pad(id, 26)}`),
+  );
+  process.stderr.write('\r' + ' '.repeat(40) + '\r');
+  printHealthTable(reports);
+  console.log(`(${((Date.now() - started) / 1000).toFixed(0)}s)\n`);
+}
+
+function reportDominance(args: Args): void {
+  if (!args.card) throw new Error('--report dominance needs --card <id>');
+  const [report] = runBalance({
+    cardIds: [args.card],
+    samples: args.samples,
+    continuations: args.continuations,
+    pool: Math.max(60, args.samples * 3),
+    strategies: args.strategy === 'mixed' ? [...STRATEGY_NAMES] : [args.strategy],
+    run: toOptions(args),
+  });
+  if (report) printCardDetail(report);
+}
+
 const args = parseArgs(process.argv.slice(2));
 if (args.report === 'summary') reportSummary(args);
 else if (args.report === 'career') reportCareer(args);
 else if (args.report === 'histogram') reportHistogram(args);
+else if (args.report === 'cards') reportCards(args);
+else if (args.report === 'dominance') reportDominance(args);
 else throw new Error(`Unknown report ${args.report}`);

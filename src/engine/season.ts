@@ -33,6 +33,8 @@ export interface SeasonModifiers {
   focus?: readonly AttributeKey[];
   /** Set by the scripted injury window. Fires regardless of the hazard roll. */
   forceInjury?: boolean;
+  /** Points added to squad standing by live modifiers — a captaincy, say. */
+  standingBonus?: number;
 }
 
 export const NEUTRAL_MODIFIERS: SeasonModifiers = {
@@ -110,6 +112,7 @@ export function simulateSeason(
     matchesMissed: injuries.matchesMissed,
     totalMatches,
     minutesFactor: modifiers.minutesFactor,
+    standingBonus: modifiers.standingBonus ?? 0,
   });
 
   // -- Output ---------------------------------------------------------------
@@ -157,7 +160,10 @@ export function simulateSeason(
   // Modest: enough that a great individual season tips a close title race,
   // never enough to carry a weak squad to one.
   const minutesShare = clamp(minutes.minutes / (totalMatches * 90), 0, 1);
-  const nudgePoints = clamp(contribution * 2.6, -1.5, 4.2) * minutesShare;
+  // Trimmed for phase 3: decision cards hand out minutes bonuses, which raise
+  // contribution, which was quietly promoting players' clubs a division and
+  // pushing big-five football from a minority experience to a common one.
+  const nudgePoints = clamp(contribution * 2.2, -1.2, 3) * minutesShare;
   const worldResult = simulateWorldSeason(tableRng, world, state.world, {
     clubId: state.clubId,
     points: nudgePoints,
@@ -248,12 +254,14 @@ export function simulateSeason(
     ovrStart: player.ovr,
     ovrEnd: computeOvr(development.attributes, player.position),
     marketValue: 0,
+    wage: state.wage,
     injuries: injuries.injuries,
     matchesMissed: injuries.matchesMissed,
     caps: 0,
     internationalGoals: 0,
     keeper: keeper ? keeper.keeper : null,
     trophies,
+    events: [],
   };
 
   // Position baselines are what "recent output" is measured against.

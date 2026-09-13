@@ -6,7 +6,7 @@ in between until retirement.
 
 No accounts, no backend, no downloads.
 
-## Status: phase 2 complete
+## Status: phase 3 complete
 
 The build runs in phases, stopping for review after each one.
 
@@ -14,7 +14,7 @@ The build runs in phases, stopping for review after each one.
 | --- | --- | --- |
 | 1 | Engine skeleton, PRNG, determinism tests | **done** |
 | 2 | Season simulation and development curves, tuned from a CLI harness | **done** |
-| 3 | Decision system, ten cards, trade-off test | not started |
+| 3 | Decision system, ten cards, trade-off test | **done** |
 | 4 | Minimal React UI, mobile portrait, end to end | not started |
 | 5 | Full decision card set, endings, verdict text | not started |
 | 6 | End screen, share card, share URL | not started |
@@ -92,27 +92,31 @@ than simulated individually.
 ## Commands
 
 ```
-npm test           vitest, all suites
+npm test           vitest, all suites (includes the balance suite)
 npm run lint       eslint, including the engine purity rules
 npm run typecheck  tsc --noEmit
 
 npm run sim -- --seeds 1000 --position ST --strategy greedy --report summary
 npm run sim -- --report career --seed 2666
 npm run sim -- --seeds 5000 --report histogram --metric peakSeasonGoals
+npm run sim -- --report cards                    card health table, all cards
+npm run sim -- --report dominance --card derby-half-fit
+npm run cards -- --seed 1234                    play one career in the terminal
+
 npx tsx scripts/probe.ts    print the model's expectations for archetypal inputs
 npx tsx scripts/pick.ts     find representative careers by career score
 ```
+
+See `docs/phase-2.md` for the simulation layer and `docs/phase-3.md` for the decision system.
 
 Strategies (`greedy`, `loyal`, `random`, `balanced`) are stand-in decision policies for
 tuning only. Phase 3 replaces them with decision cards the player answers.
 
 ## Known gaps, by design
 
-- **Decisions are stand-ins.** Three placeholder cards exist (training focus, contract
-  renewal, retirement). The real set, and the no-dominant-option test, are phase 3.
-  Transfers are currently resolved by a tuning strategy rather than by the player.
-- **International allegiance is not yet a choice.** The national-team beat fires and the
-  player declares for the country he was born in. Choosing between eligible nations is a
-  phase 3 card.
 - **Endings are first-pass.** Tier thresholds in `endings.ts` have not been fitted to the
-  2%-40% distribution target; that is phase 5, once the full card set exists.
+  2%-40% distribution target; that is phase 5.
+- **Big-five reach sits at about 28%** against a 20-25% band. Roughly half of all entries are
+  a player's club being promoted rather than a transfer, and the decision cards' playing-time
+  bonuses push marginal seasons over the 900-minute bar the metric counts.
+- **The card set is ten plus a fallback.** Phase 5 expands it.

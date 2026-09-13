@@ -1,22 +1,24 @@
 import { dueBeats, markFired, type BeatId } from './beats';
 import { createCareer } from './creation';
 import {
-  DECISION_DEFS,
-  queueDelayed,
-  type DecisionCard,
-  type DecisionDef,
-  type OptionResolution,
+  applyDecision,
+  decisionRng,
+  drainQueue,
+  expireModifiers,
+  present,
+  resolveModifiers,
+  selectCard,
+  type PresentedCard,
 } from './decisions';
 import { displayAttributes } from './development';
 import { computeEnding, computeTotals, type CareerTotals, type Ending } from './endings';
 import { simulateInternationalSeason } from './international';
 import { advanceWorld, clubLeagueId, clubStrength } from './league';
 import { computeOvr } from './ratings';
-import { clamp, substream, Rng } from './rng';
+import { clamp, substream } from './rng';
 import { recentOutputShare, simulateSeason, type SeasonModifiers } from './season';
-import { computeMarketValue, computeWage, generateLoanOffers, generateOffers, renewalOffer } from './transfers';
+import { computeMarketValue, generateLoanOffers, generateOffers, renewalOffer } from './transfers';
 import {
-  ATTRIBUTE_KEYS,
   MAX_AGE,
   type CareerConfig,
   type CareerEndReason,
@@ -27,11 +29,12 @@ import {
   type NationalRecord,
   type PlayerState,
   type SeasonRecord,
-  type StateDelta,
   type TransferOffer,
   type TrophyWin,
 } from './types';
 import type { World } from './world';
+import type { TransferReason } from './decisions';
+import type { AttributeKey } from './types';
 
 /**
  * No career ends before this age, whatever happens. A teenager who cannot find
@@ -47,7 +50,7 @@ export interface DecisionRequest {
   season: number;
   year: number;
   age: number;
-  card: DecisionCard;
+  card: PresentedCard;
   beat: BeatId | null;
   state: CareerState;
 }
@@ -131,60 +134,30 @@ function standingFor(state: CareerState, clubId: string): ClubStanding {
   return found;
 }
 
-function applyDelta(state: CareerState, delta: StateDelta, modifiers: SeasonModifiers): void {
-  const { player } = state;
-
-  if (delta.attributes) {
-    for (const key of ATTRIBUTE_KEYS) {
-      const change = delta.attributes[key];
-      if (change === undefined) continue;
-      player.attributes[key] = clamp(player.attributes[key] + change, 1, player.ceiling[key]);
-    }
-  }
-  if (delta.ceiling) {
-    for (const key of ATTRIBUTE_KEYS) {
-      const change = delta.ceiling[key];
-      if (change === undefined) continue;
-      player.ceiling[key] = clamp(player.ceiling[key] + change, 1, 99);
-    }
-  }
-
-  if (delta.reputation !== undefined) player.reputation = clamp(player.reputation + delta.reputation, 1, 99);
-  if (delta.form !== undefined) state.condition.form = clamp(state.condition.form + delta.form, -20, 20);
-  if (delta.wear !== undefined) state.condition.wear = clamp(state.condition.wear + delta.wear, 0, 100);
-  if (delta.injuryProneness !== undefined) {
-    state.condition.injuryProneness = clamp(state.condition.injuryProneness + delta.injuryProneness, 1, 99);
-  }
-  if (delta.managerRelationship !== undefined) {
-    state.condition.managerRelationship = clamp(state.condition.managerRelationship + delta.managerRelationship, -100, 100);
-  }
-  if (delta.clubStanding !== undefined) {
-    const standing = standingFor(state, state.clubId);
-    standing.standing = clamp(standing.standing + delta.clubStanding, 1, 99);
-  }
-  if (delta.nationalStanding !== undefined) {
-    state.national.standing = clamp(state.national.standing + delta.nationalStanding, 0, 100);
-  }
-  if (delta.contractYears !== undefined) state.contractYearsRemaining = Math.max(0, delta.contractYears);
-  if (delta.wage !== undefined) state.wage = Math.round(state.wage * delta.wage);
-  if (delta.marketValue !== undefined) player.marketValue = Math.round(player.marketValue * delta.marketValue);
-  if (delta.minutesFactor !== undefined) modifiers.minutesFactor *= delta.minutesFactor;
-  if (delta.developmentFactor !== undefined) modifiers.trainingFactor *= delta.developmentFactor;
-  if (delta.injuryRiskFactor !== undefined) modifiers.injuryRiskFactor *= delta.injuryRiskFactor;
-}
-
 /** Moves the player, and charges the reputational cost of how he left. */
-function completeMove(state: CareerState, world: World, offer: TransferOffer): void {
+function completeMove(
+  state: CareerState,
+  world: World,
+  offer: TransferOffer,
+  reason?: TransferReason,
+): void {
   const leaving = standingFor(state, state.clubId);
   const fromStrength = clubStrength(state.world, state.clubId);
   const toStrength = clubStrength(state.world, offer.clubId);
 
-  if (!offer.loan && state.contractYearsRemaining > 0) {
+  if (!offer.loan) {
     // Leaving a club that still had you under contract, for a side no better
     // than the one you left, reads as a move for money. That is what costs you
-    // the statue.
-    const forMoney = offer.wage > state.wage * 1.25 && toStrength <= fromStrength + 2;
-    leaving.standing = clamp(leaving.standing - (forMoney ? 26 : 9), 1, 99);
+    // the statue. A card can say outright that this is what it was.
+    const forMoney =
+      reason === 'money' ||
+      (reason === undefined &&
+        state.contractYearsRemaining > 0 &&
+        offer.wage > state.wage * 1.25 &&
+        toStrength <= fromStrength + 2);
+    if (forMoney || state.contractYearsRemaining > 0) {
+      leaving.standing = clamp(leaving.standing - (forMoney ? 26 : 9), 1, 99);
+    }
     leaving.leftForMoney = leaving.leftForMoney || forMoney;
   }
 
@@ -201,22 +174,6 @@ function completeMove(state: CareerState, world: World, offer: TransferOffer): v
 // ---------------------------------------------------------------------------
 // Cards
 // ---------------------------------------------------------------------------
-
-function selectCard(
-  rng: Rng,
-  state: CareerState,
-  world: World,
-  beats: readonly BeatId[],
-): { def: DecisionDef; beat: BeatId | null } | null {
-  const ctx = { state, world };
-  for (const beat of beats) {
-    const candidates = DECISION_DEFS.filter((d) => d.beats?.includes(beat) && d.available(ctx));
-    if (candidates.length > 0) return { def: rng.pick(candidates), beat };
-  }
-  const general = DECISION_DEFS.filter((d) => !d.beats && d.available(ctx));
-  if (general.length === 0) return null;
-  return { def: rng.pick(general), beat: null };
-}
 
 // ---------------------------------------------------------------------------
 // The loop
@@ -258,74 +215,112 @@ function applyDefaultBeat(
 
 export function runCareer(config: CareerConfig, world: World, policy: CareerPolicy): Career {
   const state = createCareer(substream(config.seed, 'creation', 0), config, world);
+  return continueCareer(state, world, policy, config);
+}
+
+/**
+ * Runs a career on from an existing state. The balance suite branches from
+ * snapshots taken mid-career, so the loop has to be able to start anywhere.
+ */
+export function continueCareer(
+  initial: CareerState,
+  world: World,
+  policy: CareerPolicy,
+  config: CareerConfig,
+): Career {
+  let state = initial;
 
   while (!state.retired) {
-    const modifiers: SeasonModifiers = { minutesFactor: 1, trainingFactor: 1, injuryRiskFactor: 1 };
+    // 1. Housekeeping, then the delayed queue. Effects that land this season are
+    //    felt this season, so both run before anything else.
+    expireModifiers(state);
+    const rng = decisionRng(state.seed, state.season);
+    const events = drainQueue(state, rng);
+    state.player.ovr = computeOvr(state.player.attributes, state.player.position);
 
-    // 1. Effects queued by earlier decisions that land this season.
-    const landing = state.pending.filter((p) => p.dueSeason === state.season);
-    state.pending = state.pending.filter((p) => p.dueSeason !== state.season);
-    for (const p of landing) applyDelta(state, p.effect, modifiers);
-
-    // 2. The transfer window.
+    // 2. The mechanical transfer window: contracts expiring, nobody wanting him.
+    //    Card-driven moves are separate and happen at the decision below.
     if (state.season >= 1) {
       const ended = runTransferWindow(state, world, policy);
       if (ended) break;
     }
 
     // 3. A decision, if one is owed.
-    const cardRng = substream(state.seed, 'transfers', state.season);
     const beats = dueBeats(state, world);
     const cadenceDue = state.season % CADENCE_INTERVAL[state.cadence] === 0;
     let answeredBeat: BeatId | null = null;
     if (beats.length > 0 || cadenceDue) {
-      const selected = selectCard(cardRng, state, world, beats);
-      if (selected) {
-        answeredBeat = selected.beat;
-        const card = selected.def.build({ state, world });
-        const index = policy.decide({
-          season: state.season,
-          year: state.year,
-          age: state.player.age,
-          card,
-          beat: selected.beat,
-          state,
-        });
-        const option = card.options[clamp(Math.trunc(index), 0, card.options.length - 1)];
-        if (!option) throw new Error(`Card ${card.id} produced no options`);
-        const resolution: OptionResolution = option.resolve({ state, world });
+      const selection = selectCard(state, world, beats, rng);
+      const presented = present(selection.def, selection.ctx);
+      answeredBeat = (selection.beat as BeatId | null) ?? null;
 
-        state.decisions.push({
-          season: state.season,
-          cardId: card.id,
-          optionId: option.id,
-          optionIndex: card.options.indexOf(option),
-        });
-        if (selected.beat) state.firedBeats = markFired(state, selected.beat);
+      const index = clamp(
+        Math.trunc(
+          policy.decide({
+            season: state.season,
+            year: state.year,
+            age: state.player.age,
+            card: presented,
+            beat: answeredBeat,
+            state,
+          }),
+        ),
+        0,
+        presented.options.length - 1,
+      );
+      const option = presented.options[index];
+      if (!option) throw new Error(`Card ${presented.cardId} produced no options`);
 
-        if (resolution.immediate) applyDelta(state, resolution.immediate, modifiers);
-        state.pending.push(...queueDelayed(state, resolution, card.id));
-        if (resolution.national) {
-          state.national.nationId = resolution.national.nationId;
-          state.national.committed = resolution.national.commit;
+      const outcome = applyDecision(state, presented.cardId, option.id, rng, world, presented.subject);
+      state = outcome.state;
+      events.push(...outcome.log);
+      // A card can move an attribute, and OVR is derived from attributes.
+      state.player.ovr = computeOvr(state.player.attributes, state.player.position);
+
+      if (answeredBeat) state.firedBeats = markFired(state, answeredBeat);
+
+      if (outcome.declaredNation) {
+        state.national.nationId = outcome.declaredNation;
+        state.national.committed = true;
+      }
+      if (outcome.transfer) {
+        const offer = presented.subject.offers?.[outcome.transfer.offerIndex];
+        if (offer) {
+          completeMove(state, world, offer, outcome.transfer.reason);
+          // The new club sets the wage, so a rise the card promised has to be
+          // applied on top of the new deal rather than to the old one.
+          if (outcome.wageMultiplier !== 1) {
+            state.wage = Math.round(state.wage * outcome.wageMultiplier);
+          }
         }
-        if (resolution.focus) modifiers.focus = resolution.focus;
-        if (resolution.retire) {
-          state.retired = true;
-          state.endReason = 'retired';
-          break;
-        }
+      }
+      if (outcome.retire) {
+        state.retired = true;
+        state.endReason = 'retired';
+        break;
       }
     }
 
     // Beats no card answered still fire — that is the whole point of them.
+    const beatModifiers: SeasonModifiers = { minutesFactor: 1, trainingFactor: 1, injuryRiskFactor: 1 };
     for (const beat of beats) {
       if (beat === answeredBeat) continue;
-      applyDefaultBeat(state, world, beat, modifiers);
+      applyDefaultBeat(state, world, beat, beatModifiers);
       state.firedBeats = markFired(state, beat);
     }
 
-    // 4. Play the season.
+    // 4. Fold the live modifiers into what the simulation reads.
+    const active = resolveModifiers(state);
+    const modifiers: SeasonModifiers = {
+      minutesFactor: active.minutesFactor * beatModifiers.minutesFactor,
+      trainingFactor: active.developmentFactor * beatModifiers.trainingFactor,
+      injuryRiskFactor: active.injuryRiskFactor * beatModifiers.injuryRiskFactor,
+      focus: active.focus.length > 0 ? (active.focus as AttributeKey[]) : undefined,
+      forceInjury: beatModifiers.forceInjury,
+      standingBonus: active.standingBonus,
+    };
+
+    // 5. Play the season.
     const outcome = simulateSeason(state, world, modifiers);
     const nationalRng = substream(state.seed, 'national', state.season);
     const international = simulateInternationalSeason(nationalRng, state, world, outcome.record);
@@ -339,9 +334,9 @@ export function runCareer(config: CareerConfig, world: World, policy: CareerPoli
         : outcome.record.trophies,
     };
 
-    commitSeason(state, world, record, outcome, international);
+    commitSeason(state, world, record, outcome, international, events);
 
-    // 5. The world moves on.
+    // 6. The world moves on.
     const tableRng = substream(state.seed, 'leagueTables', state.season + 10_000);
     advanceWorld(tableRng, world, state.world, outcome.worldResult);
 
@@ -366,11 +361,17 @@ export function runCareer(config: CareerConfig, world: World, policy: CareerPoli
   }
 
   const ending = computeEnding(state, world);
+  const finalAttributes = displayAttributes(state.player.attributes, state.player.ceiling);
   return {
     seed: state.seed,
     seedLabel: state.seedLabel,
     config,
-    player: { ...state.player, attributes: displayAttributes(state.player.attributes, state.player.ceiling) },
+    player: {
+      ...state.player,
+      attributes: finalAttributes,
+      // Derived, always — so the headline number agrees with the numbers beside it.
+      ovr: computeOvr(finalAttributes, state.player.position),
+    },
     peakAge: state.player.peakAge,
     seasons: state.seasons,
     decisions: state.decisions,
@@ -449,6 +450,7 @@ function commitSeason(
   record: SeasonRecord,
   outcome: ReturnType<typeof simulateSeason>,
   international: ReturnType<typeof simulateInternationalSeason>,
+  events: string[],
 ): void {
   const league = world.league(clubLeagueId(state.world, state.clubId));
   const club = world.club(state.clubId);
@@ -491,13 +493,10 @@ function commitSeason(
     recentOutput: recentOutputShare(record, state.player.position),
   });
   state.player.marketValue = record.marketValue;
-  state.wage = computeWage({
-    ovr: state.player.ovr,
-    wageBudget: club.wageBudget,
-    reputation: state.player.reputation,
-    age: state.player.age,
-    role: record.squadRole,
-  });
+  // Wage is set by the contract, not recomputed every summer. Recomputing it
+  // here wiped every rise a card or a negotiation had won, which made wage
+  // effects last exactly one season and the money cards meaningless.
+  void club;
 
   // Condition carries forward. Wear never fully comes off.
   state.condition.wear = clamp(
@@ -540,6 +539,7 @@ function commitSeason(
     99,
   );
 
+  record.events = events;
   state.trophies.push(...record.trophies);
   state.injuries.push(...record.injuries);
   state.seasons.push(record);

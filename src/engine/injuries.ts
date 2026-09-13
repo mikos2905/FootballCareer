@@ -64,7 +64,7 @@ const SEVERITIES: readonly SeverityProfile[] = [
     labels: ['Ruptured ankle ligaments', 'Broken leg', 'Cruciate damage', 'Stress fracture'],
     matches: [17, 30],
     suppression: [4, 7],
-    permanentChance: 0.06,
+    permanentChance: 0.045,
     careerEndingChance: 0.025,
     wear: 9,
   },

@@ -67,6 +67,8 @@ export interface MinutesInputs {
   totalMatches: number;
   /** Multiplier from decisions. */
   minutesFactor: number;
+  /** Points added to standing by live modifiers, such as the captaincy. */
+  standingBonus?: number;
 }
 
 export interface MinutesResult {
@@ -89,7 +91,8 @@ export function squadStanding(inputs: MinutesInputs): number {
     inputs.squadStrength +
     ageStandingAdjustment(inputs.age) +
     (inputs.managerRelationship / 100) * 5 +
-    (inputs.form / 20) * 2.5
+    (inputs.form / 20) * 2.5 +
+    (inputs.standingBonus ?? 0)
   );
 }
 

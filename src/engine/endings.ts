@@ -26,6 +26,8 @@ export type EndingTier =
 
 export interface CareerTotals {
   seasons: number;
+  /** Everything he was paid across the career. */
+  earnings: number;
   appearances: number;
   goals: number;
   assists: number;
@@ -62,6 +64,7 @@ export const TIER_LABELS: Record<EndingTier, string> = {
 export function computeTotals(state: CareerState, world: World): CareerTotals {
   const totals: CareerTotals = {
     seasons: state.seasons.length,
+    earnings: 0,
     appearances: 0,
     goals: 0,
     assists: 0,
@@ -73,6 +76,7 @@ export function computeTotals(state: CareerState, world: World): CareerTotals {
     clubsPlayedFor: new Set(state.seasons.map((s) => s.clubId)).size,
   };
   for (const s of state.seasons) {
+    totals.earnings += s.wage;
     totals.appearances += s.appearances;
     totals.goals += s.goals;
     totals.assists += s.assists;

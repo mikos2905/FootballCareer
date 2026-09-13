@@ -183,6 +183,10 @@ export function advanceWorld(
     // books. Without this the divisions blur into each other within a decade
     // and the gap between the top flight and the rest stops meaning anything.
     const destinationAverage = leagueAverageStrength(world, state, move.toLeagueId);
+    // Both directions converge on the destination division at the same rate.
+    // Slowing the promoted side down makes things worse, not better: a weaker
+    // club in the top flight is an easier one to hold down a place at, so more
+    // players end up recorded as having played top-flight football, not fewer.
     const pull = (destinationAverage - entry.strength) * 0.45;
     entry.strength = clamp(entry.strength + pull + (move.direction === 1 ? 1.5 : -2), 18, 97);
   }

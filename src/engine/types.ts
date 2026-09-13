@@ -1,6 +1,10 @@
 /** Core state model. Every dimension in the brief is tracked separately — none of
  *  this collapses into a single score until the ending is computed. */
 
+import type { ActiveModifier, PendingEffect, ShownCard } from './decisions/types';
+
+export type { ActiveModifier, PendingEffect, ShownCard };
+
 export type AttributeKey =
   | 'pace'
   | 'shooting'
@@ -237,12 +241,16 @@ export interface SeasonRecord {
   ovrStart: number;
   ovrEnd: number;
   marketValue: number;
+  /** What he was paid this season. */
+  wage: number;
   injuries: Injury[];
   matchesMissed: number;
   caps: number;
   internationalGoals: number;
   keeper: KeeperRecord | null;
   trophies: TrophyWin[];
+  /** Delayed effects that landed and probabilistic outcomes that fell this season. */
+  events: string[];
 }
 
 export interface PlayerState {
@@ -294,15 +302,12 @@ export interface CareerState {
   retired: boolean;
   endReason: CareerEndReason | null;
   firedBeats: string[];
+  /** Delayed effects waiting to fire. Drains at the start of each season. */
   pending: PendingEffect[];
-}
-
-export interface PendingEffect {
-  id: string;
-  dueSeason: number;
-  source: string;
-  label: string;
-  effect: StateDelta;
+  /** Durational modifiers the simulation reads while they are alive. */
+  modifiers: ActiveModifier[];
+  /** Every card shown this run, so a career does not repeat itself. */
+  cardHistory: ShownCard[];
 }
 
 /** A declarative change to career state. Decisions and beats emit these rather

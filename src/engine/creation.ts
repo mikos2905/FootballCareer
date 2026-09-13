@@ -217,5 +217,7 @@ export function createCareer(
     endReason: null,
     firedBeats: [],
     pending: [],
+    modifiers: [],
+    cardHistory: [],
   };
 }

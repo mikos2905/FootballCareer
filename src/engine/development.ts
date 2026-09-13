@@ -143,7 +143,7 @@ export function developAttributes(
     const gap = Math.max(0, cap - now);
 
     const relevance = clamp(0.78 + (weights[key] ?? 0) * 1.7, 0.82, 1.18);
-    const focusBoost = focusSet.has(key) ? 1.5 : focusSet.size > 0 ? 0.82 : 1;
+    const focusBoost = focusSet.has(key) ? 1.65 : focusSet.size > 0 ? 0.76 : 1;
     const noise = rng.around(1, 0.16, 0.55, 1.45);
 
     let change = gap * age * minutes * leagueFactor * relevance * focusBoost * inputs.trainingFactor * noise;

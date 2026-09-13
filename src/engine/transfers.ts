@@ -72,7 +72,7 @@ export function computeWage(params: {
 }
 
 /** What role a club of this strength would realistically offer this player. */
-function projectedRole(playerRating: number, squadStrength: number, age: number): SquadRole {
+export function projectedRole(playerRating: number, squadStrength: number, age: number): SquadRole {
   const standing = playerRating - squadStrength + ageStandingAdjustment(age);
   if (standing >= 6) return 'star';
   if (standing >= 1) return 'starter';
@@ -105,10 +105,13 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
   // turning into a club a year.
   if (!inputs.mustMove) {
     const interest = clamp(
-      0.14 + (player.reputation / 100) * 0.42 + (inputs.recentOutput - 0.8) * 0.2 +
-        (state.contractYearsRemaining <= 1 ? 0.26 : 0),
-      0.06,
-      0.78,
+      // Lower than it was in phase 2: the decision cards now supply a share of
+      // the movement in a career, so the mechanical market has to make room for
+      // them or everybody ends up having played for eight clubs.
+      0.08 + (player.reputation / 100) * 0.32 + (inputs.recentOutput - 0.8) * 0.18 +
+        (state.contractYearsRemaining <= 1 ? 0.22 : 0),
+      0.05,
+      0.7,
     );
     if (!rng.chance(interest)) return [];
   }
@@ -144,7 +147,7 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
     // The strongest leagues shop from a shortlist. A good player nobody has
     // heard of does not get a call from one, however capable he is.
     const eliteBar =
-      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 38 + club.prestige * 0.25 : true;
+      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 51 + club.prestige * 0.25 : true;
 
     return affordable && known && eliteBar && (level || moneyTalks) && league.tier <= (player.ovr >= 68 ? 2 : 3);
   });
@@ -311,4 +314,49 @@ export function describeOffer(offer: TransferOffer): string {
 /** Average squad strength of a club's current division. */
 export function currentLeagueAverage(world: World, state: CareerState, clubId: string): number {
   return leagueAverageStrength(world, state.world, clubLeagueId(state.world, clubId));
+}
+
+/**
+ * Builds a concrete offer from a named club, bypassing the ordinary market
+ * filters.
+ *
+ * Some cards are about the offer that does not follow the usual rules — a giant
+ * coming in for a player who is not ready is precisely the unusual event, and
+ * routing it through generateOffers would filter it out as implausible.
+ */
+export function buildOffer(
+  rng: Rng,
+  state: CareerState,
+  world: World,
+  clubId: string,
+  opts: { loan?: boolean; contractYears?: number } = {},
+): TransferOffer {
+  const club = world.club(clubId);
+  const strength = clubStrength(state.world, clubId);
+  const league = world.league(clubLeagueId(state.world, clubId));
+  const rating = selectionRating(state.player.attributes, state.player.position);
+  const role = projectedRole(rating, strength, state.player.age);
+  const standing = rating - strength + ageStandingAdjustment(state.player.age);
+  const optimism = 1 + (club.prestige / 100) * 0.22;
+
+  return {
+    clubId,
+    clubName: club.name,
+    leagueId: league.id,
+    leagueName: league.name,
+    leagueTier: league.tier,
+    fee: Math.round((state.player.marketValue * clamp(1 + rng.around(0, 0.2, -0.4, 0.6), 0.5, 2)) / 100_000) * 100_000,
+    wage: computeWage({
+      ovr: state.player.ovr,
+      wageBudget: club.wageBudget,
+      reputation: state.player.reputation,
+      age: state.player.age,
+      role,
+    }),
+    contractYears: opts.contractYears ?? (state.player.age >= 31 ? rng.int(1, 2) : rng.int(3, 5)),
+    loan: opts.loan ?? false,
+    role,
+    projectedMinutes: Math.round(clamp(shareForStanding(standing) * optimism, 0, 1) * 3420),
+    projectionConfidence: club.prestige > 82 ? 'vague' : 'likely',
+  };
 }

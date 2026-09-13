@@ -198,7 +198,8 @@ export type SubstreamName =
   | 'matches'
   | 'development'
   | 'national'
-  | 'leagueTables';
+  | 'leagueTables'
+  | 'decisions';
 
 /** xmur3. Mixes an arbitrary string into a well-distributed uint32. */
 function xmur3(input: string): number {
