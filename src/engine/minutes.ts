@@ -90,7 +90,7 @@ export function squadStanding(inputs: MinutesInputs): number {
     rating -
     inputs.squadStrength +
     ageStandingAdjustment(inputs.age) +
-    (inputs.managerRelationship / 100) * 5 +
+    (inputs.managerRelationship / 100) * 7 +
     (inputs.form / 20) * 2.5 +
     (inputs.standingBonus ?? 0)
   );

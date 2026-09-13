@@ -5,7 +5,6 @@ import { makePolicy, type StrategyName } from '../strategies';
 import type { CareerConfig, CareerState } from '../types';
 import type { World } from '../world';
 import { card, isAvailable } from './registry';
-import { cloneState } from './resolve';
 import type { Card, PresentedCard } from './types';
 
 /**
@@ -79,35 +78,64 @@ function variance(values: number[]): number {
 // ---------------------------------------------------------------------------
 
 export interface SampledState {
-  state: CareerState;
+  /**
+   * The snapshot, held serialised.
+   *
+   * One walk of the pool fills sixty-one buckets at once, and a mid-career
+   * state carries the drifted world with it — a thousand live clones is most
+   * of a gigabyte, and the suite was being killed for it. Held as text it is
+   * a few tens of megabytes, and parsing one back costs far less than the
+   * career we are about to simulate from it.
+   */
+  readonly stateJson: string;
   config: CareerConfig;
   presented: PresentedCard;
 }
 
+/** The snapshot, live again. Each call hands back an independent copy. */
+export function stateOf(sample: SampledState): CareerState {
+  return JSON.parse(sample.stateJson) as CareerState;
+}
+
+/** How many snapshots one career may contribute for a single card. */
+const SNAPSHOTS_PER_CAREER = 2;
+
 /**
- * Walks careers and snapshots every point at which the card under test comes
- * up. Snapshots are deep clones, so branching from one cannot disturb another.
+ * Walks the pool of careers once and snapshots every point at which any card
+ * under test comes up.
+ *
+ * Sampling per card would re-simulate the whole pool sixty-one times over, for
+ * states that a single walk already passes through. One walk, every card.
+ * Snapshots are deep clones, so branching from one cannot disturb another.
  */
-export function sampleStates(
-  def: Card,
+export function sampleAllStates(
+  cardIds: readonly string[],
   world: World,
   opts: { configs: readonly CareerConfig[]; strategies: readonly StrategyName[]; limit: number },
-): SampledState[] {
-  const found: SampledState[] = [];
+  onProgress?: (done: number, total: number) => void,
+): Map<string, SampledState[]> {
+  const wanted = new Set(cardIds);
+  const found = new Map<string, SampledState[]>(cardIds.map((id) => [id, []]));
+  const total = opts.configs.length * opts.strategies.length;
+  let done = 0;
 
   for (const config of opts.configs) {
-    if (found.length >= opts.limit) break;
     for (const strategy of opts.strategies) {
-      if (found.length >= opts.limit) break;
       const policy = makePolicy(strategy, config.seed);
-      const capture: SampledState[] = [];
+      const perCard = new Map<string, number>();
 
       const observing: CareerPolicy = {
         decide: (request) => {
-          // At most two snapshots per career, so one long run cannot dominate
-          // the sample with correlated states.
-          if (request.card.cardId === def.id && capture.length < 2) {
-            capture.push({ state: cloneState(request.state), config, presented: request.card });
+          const id = request.card.cardId;
+          const bucket = found.get(id);
+          if (
+            bucket !== undefined &&
+            wanted.has(id) &&
+            bucket.length < opts.limit &&
+            (perCard.get(id) ?? 0) < SNAPSHOTS_PER_CAREER
+          ) {
+            perCard.set(id, (perCard.get(id) ?? 0) + 1);
+            bucket.push({ stateJson: JSON.stringify(request.state), config, presented: request.card });
           }
           return policy.decide(request);
         },
@@ -116,10 +144,23 @@ export function sampleStates(
 
       const initial = createCareer(substream(config.seed, 'creation', 0), config, world);
       continueCareer(initial, world, observing, config);
-      found.push(...capture);
+      done += 1;
+      onProgress?.(done, total);
+
+      // Everything is full; no point walking the rest of the pool.
+      if ([...found.values()].every((b) => b.length >= opts.limit)) return found;
     }
   }
-  return found.slice(0, opts.limit);
+  return found;
+}
+
+/** Single-card sampling, for the CLI's one-card reports. */
+export function sampleStates(
+  def: Card,
+  world: World,
+  opts: { configs: readonly CareerConfig[]; strategies: readonly StrategyName[]; limit: number },
+): SampledState[] {
+  return sampleAllStates([def.id], world, opts).get(def.id) ?? [];
 }
 
 // ---------------------------------------------------------------------------
@@ -146,7 +187,7 @@ function branch(
 ): OutcomeVector[] {
   const out: OutcomeVector[] = [];
   for (let n = 0; n < continuations; n += 1) {
-    const state = cloneState(sample.state);
+    const state = stateOf(sample);
     // A different seed gives a different future; the state up to here is fixed.
     state.seed = (state.seed ^ ((n + 1) * 0x9e3779b1)) >>> 0;
     const base = makePolicy(strategy, state.seed);
@@ -182,11 +223,20 @@ export interface OptionReport {
 
 export interface AxisSwing {
   axis: keyof OutcomeVector;
-  /** Gap between the best and worst option's mean on this axis. */
+  /** Gap between the two furthest-apart options, in the axis's own units. */
   swing: number;
-  /** That gap in pooled standard deviations — how big it is. */
+  /**
+   * That gap measured against the luck a player faces from this point on —
+   * the spread of outcomes *within* one sampled state, not across all of them.
+   *
+   * Pooling across states puts the difference between a sixteen-year-old at a
+   * provincial club and a twenty-six-year-old at a giant into the denominator,
+   * which is variance the decision was never competing with. The player is
+   * standing at one decision point; what they can feel is how far the answer
+   * moves them relative to everything else that could happen from there.
+   */
   effectSize: number;
-  /** That gap in standard errors — whether it is real. */
+  /** That gap in standard errors of the paired difference — whether it is real. */
   t: number;
 }
 
@@ -232,8 +282,9 @@ export const DEFAULT_THRESHOLDS: BalanceThresholds = {
   dominance: 0.3,
   dead: 0.3,
   // A single decision among roughly eighteen in a career that shifts the
-  // outcome distribution by 0.15 standard deviations is a real decision.
-  // Below that it is decoration, however nice the prose is.
+  // outcome distribution by 0.15 standard deviations of the luck facing the
+  // player at that moment is a real decision. Below that it is decoration,
+  // however nice the prose is.
   minEffectSize: 0.15,
   // And the difference has to be measurable, not a sampling artefact. Below
   // this the suite is under-sampled rather than the card being broken.
@@ -246,33 +297,56 @@ export interface AnalyseOptions {
   configs: readonly CareerConfig[];
   strategies: readonly StrategyName[];
   thresholds?: BalanceThresholds;
+  /** States sampled elsewhere, when one walk is serving many cards. */
+  sampled?: readonly SampledState[];
+}
+
+/**
+ * Money is lognormal: a handful of superstar careers earn an order of
+ * magnitude more than the median, and on the raw scale their spread swamps
+ * every real difference. Compare on the log scale, report in euros.
+ */
+const LOG_AXES = new Set<keyof OutcomeVector>(['peakMarketValue', 'earnings']);
+
+function scaled(axis: keyof OutcomeVector, value: number): number {
+  return LOG_AXES.has(axis) ? Math.log1p(Math.max(0, value)) : value;
+}
+
+/** One sampled state's continuations, kept paired by option. */
+interface StateResults {
+  byOption: Map<string, OutcomeVector[]>;
 }
 
 export function analyseCard(cardId: string, world: World, opts: AnalyseOptions): CardReport {
   const def = card(cardId);
   const thresholds = opts.thresholds ?? DEFAULT_THRESHOLDS;
-  const samples = sampleStates(def, world, {
-    configs: opts.configs,
-    strategies: opts.strategies,
-    limit: opts.samples,
+  const samples =
+    opts.sampled ??
+    sampleStates(def, world, {
+      configs: opts.configs,
+      strategies: opts.strategies,
+      limit: opts.samples,
+    });
+
+  const empty = (flag: string): CardReport => ({
+    cardId,
+    category: def.category,
+    samples: samples.length,
+    continuations: opts.continuations,
+    options: [],
+    scoreSwing: 0,
+    strongestAxis: { axis: 'careerScore', swing: 0, effectSize: 0, t: 0 },
+    effectSize: 0,
+    flags: [flag],
   });
 
-  if (samples.length === 0) {
-    return {
-      cardId,
-      category: def.category,
-      samples: 0,
-      continuations: opts.continuations,
-      options: [],
-      scoreSwing: 0,
-      strongestAxis: { axis: 'careerScore', swing: 0, effectSize: 0, t: 0 },
-      effectSize: 0,
-      flags: ['NEVER ELIGIBLE'],
-    };
-  }
+  if (samples.length === 0) return empty('NEVER ELIGIBLE');
 
   const optionIds = samples[0]!.presented.options.map((o) => o.id);
   const labels = new Map(samples[0]!.presented.options.map((o) => [o.id, o.label]));
+  if (optionIds.length < 2) return empty('SINGLE OPTION');
+
+  const reference = stateOf(samples[0]!);
 
   // An option that ends the career is worse on every cumulative axis by
   // definition — you stop accruing appearances, trophies and caps the moment
@@ -280,16 +354,16 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
   // exempt from that check. It is still held to the dominance check.
   const retiringOptions = new Set(
     def
-      .options({ state: samples[0]!.state, world, subject: samples[0]!.presented.subject })
+      .options({ state: reference, world, subject: samples[0]!.presented.subject })
       .filter((o) =>
         o
-          .effects({ state: samples[0]!.state, world, subject: samples[0]!.presented.subject })
+          .effects({ state: reference, world, subject: samples[0]!.presented.subject })
           .some((e) => e.kind === 'retire'),
       )
       .map((o) => o.id),
   );
 
-  const perOption = new Map<string, OutcomeVector[]>(optionIds.map((id) => [id, []]));
+  const perState: StateResults[] = [];
   const dominantCount = new Map<string, number>(optionIds.map((id) => [id, 0]));
   const deadCount = new Map<string, number>(optionIds.map((id) => [id, 0]));
   let comparableStates = 0;
@@ -299,14 +373,15 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
     if (options.length < 2) continue;
     const strategy = opts.strategies[comparableStates % opts.strategies.length] ?? 'balanced';
 
+    const byOption = new Map<string, OutcomeVector[]>();
     const meansByOption = options.map((option) => {
       const results = branch(sample, world, option.id, opts.continuations, strategy);
-      const bucket = perOption.get(option.id);
-      if (bucket) bucket.push(...results);
+      byOption.set(option.id, results);
       const m = {} as OutcomeVector;
       for (const axis of AXES) m[axis] = mean(results.map((r) => r[axis]));
       return { id: option.id, m };
     });
+    perState.push({ byOption });
     comparableStates += 1;
 
     // Dominant: strictly better than every other option on every axis.
@@ -323,8 +398,10 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
     }
   }
 
+  const allOf = (id: string): OutcomeVector[] => perState.flatMap((s) => s.byOption.get(id) ?? []);
+
   const options: OptionReport[] = optionIds.map((id) => {
-    const results = perOption.get(id) ?? [];
+    const results = allOf(id);
     const means = {} as OutcomeVector;
     for (const axis of AXES) means[axis] = mean(results.map((r) => r[axis]));
     return {
@@ -342,23 +419,62 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
 
   // Which dimension does this card actually move? Take the strongest, since
   // the cards trade across dimensions rather than all pushing career score.
+  //
+  // Branch n of option A and branch n of option B start from the same cloned
+  // state with the same derived seed, so they are matched pairs: everything
+  // except the answer is held fixed. Differencing them removes the state and
+  // the luck in one step, which is what makes a once-per-career card
+  // measurable at all.
   let strongestAxis: AxisSwing = { axis: 'careerScore', swing: 0, effectSize: 0, t: 0 };
   for (const axis of AXES) {
-    const means = options.map((o) => o.means[axis]);
-    if (means.length < 2) continue;
-    const swing = Math.max(...means) - Math.min(...means);
-    const pooledVariance = mean(
-      optionIds.map((id) => variance((perOption.get(id) ?? []).map((r) => r[axis]))),
-    );
-    const sd = Math.sqrt(pooledVariance);
+    // The two options that end up furthest apart, chosen on pooled means so
+    // the pair is not cherry-picked state by state.
+    let high = optionIds[0]!;
+    let low = optionIds[0]!;
+    let best = -Infinity;
+    let worst = Infinity;
+    for (const id of optionIds) {
+      const m = mean(allOf(id).map((r) => scaled(axis, r[axis])));
+      if (m > best) { best = m; high = id; }
+      if (m < worst) { worst = m; low = id; }
+    }
+    if (high === low) continue;
+
+    const diffs: number[] = [];
+    const rawDiffs: number[] = [];
+    for (const state of perState) {
+      const a = state.byOption.get(high);
+      const b = state.byOption.get(low);
+      if (!a || !b) continue;
+      const n = Math.min(a.length, b.length);
+      for (let i = 0; i < n; i += 1) {
+        diffs.push(scaled(axis, a[i]![axis]) - scaled(axis, b[i]![axis]));
+        rawDiffs.push(a[i]![axis] - b[i]![axis]);
+      }
+    }
+    if (diffs.length < 2) continue;
+
+    // The luck a player faces from one decision point, not the spread across
+    // all the different careers we sampled from.
+    const withinState: number[] = [];
+    for (const state of perState) {
+      for (const id of optionIds) {
+        const results = state.byOption.get(id);
+        if (results && results.length >= 2) {
+          withinState.push(variance(results.map((r) => scaled(axis, r[axis]))));
+        }
+      }
+    }
+    const sd = Math.sqrt(mean(withinState));
     if (sd <= 0) continue;
-    const n = mean(optionIds.map((id) => (perOption.get(id) ?? []).length));
-    const standardError = sd * Math.sqrt(2 / Math.max(1, n));
+
+    const meanDiff = mean(diffs);
+    const standardError = Math.sqrt(variance(diffs) / diffs.length);
     const candidate: AxisSwing = {
       axis,
-      swing,
-      effectSize: swing / sd,
-      t: standardError > 0 ? swing / standardError : 0,
+      swing: mean(rawDiffs),
+      effectSize: Math.abs(meanDiff) / sd,
+      t: standardError > 0 ? Math.abs(meanDiff) / standardError : 0,
     };
     if (candidate.effectSize > strongestAxis.effectSize) strongestAxis = candidate;
   }
@@ -370,9 +486,6 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
   }
   if (strongestAxis.effectSize < thresholds.minEffectSize) flags.push('FAKE');
   else if (strongestAxis.t < thresholds.minT) flags.push('noisy');
-  if (strongestAxis.effectSize >= thresholds.minEffectSize && strongestAxis.t < thresholds.minT) {
-    // Real but under-measured: sample harder before believing either way.
-  }
 
   return {
     cardId,

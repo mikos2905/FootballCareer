@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      # The balance suite runs here, on every commit, as phase 5 asks. It is
+      # Monte Carlo over thousands of simulated careers, so it is the slow part
+      # of this job by a wide margin and the reason the timeout is generous.
+      - run: npm test
+        timeout-minutes: 30
+      - run: npm run build

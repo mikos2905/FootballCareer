@@ -42,6 +42,7 @@ function standingRecord(state: CareerState, clubId: string) {
     found = {
       clubId,
       standing: 20,
+      goodwill: 0,
       seasonsServed: 0,
       appearances: 0,
       goals: 0,
@@ -95,7 +96,10 @@ export function applyImmediate(state: CareerState, change: ImmediateChange): voi
   }
   if (change.clubStanding) {
     const record = standingRecord(state, resolveTarget(state, change.clubStanding.target));
-    record.standing = clamp(record.standing + change.clubStanding.amount, 1, 99);
+    record.goodwill = clamp(record.goodwill + change.clubStanding.amount, -60, 60);
+    // Felt immediately as well as remembered, so the end-of-season table moves
+    // the way the card's text just said it would.
+    record.standing = clamp(record.standing + change.clubStanding.amount * 0.5, 1, 99);
     if (change.clubStanding.amount <= -20) record.leftForMoney = true;
   }
   if (change.wage !== undefined) state.wage = Math.round(state.wage * change.wage);
@@ -244,10 +248,10 @@ export interface ResolvedModifiers {
  * a career, not override the simulation underneath it.
  */
 const MODIFIER_BOUNDS = {
-  minutes: [0.25, 1.45],
+  minutes: [0.25, 1.3],
   development: [0.3, 1.4],
   injuryRisk: [0.5, 2.4],
-  standing: [-10, 8],
+  standing: [-10, 6],
 } as const;
 
 /** Folds the live modifiers into the multipliers the season simulation reads. */

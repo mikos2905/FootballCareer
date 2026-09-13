@@ -13,8 +13,8 @@ export const derbyHalfFit: Card = {
   id: 'derby-half-fit',
   category: 'injury',
   kind: 'scheduled',
+  stages: ['breakthrough', 'prime', 'decline'],
   beat: 'first-derby',
-  cooldownSeasons: 3,
   eligibility: (c) => {
     const club = currentClub(c);
     return club.rivalId !== null && (lastSeason(c)?.minutes ?? 0) > 400;
@@ -119,6 +119,7 @@ export const captainsArmband: Card = {
   id: 'captains-armband',
   category: 'dressing-room',
   kind: 'opportunistic',
+  stages: ['prime', 'decline'],
   oncePerCareer: true,
   eligibility: (c) =>
     c.state.player.age >= 24 &&
@@ -231,7 +232,7 @@ export const newManager: Card = {
   id: 'new-manager',
   category: 'dressing-room',
   kind: 'opportunistic',
-  cooldownSeasons: 6,
+  stages: ['breakthrough', 'prime', 'decline'],
   eligibility: (c) => c.state.condition.managerRelationship < 25 && (lastSeason(c)?.minutes ?? 0) > 300,
   weight: (c) => (c.state.condition.managerRelationship < -20 ? 60 : 26),
   prepare: (state, world, rng) => {
@@ -377,6 +378,7 @@ export const nationalityChoice: Card = {
   id: 'nationality-choice',
   category: 'international',
   kind: 'scheduled',
+  stages: ['breakthrough', 'prime'],
   beat: 'national-decision',
   oncePerCareer: true,
   eligibility: (c) => !c.state.national.committed && eligibleNations(c.world, c.state.player.nationId).length > 1,

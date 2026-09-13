@@ -14,6 +14,7 @@ export const firstContract: Card = {
   id: 'first-contract',
   category: 'contract',
   kind: 'scheduled',
+  stages: ['youth'],
   beat: 'first-contract',
   oncePerCareer: true,
   eligibility: (c) => c.state.player.age <= 21,
@@ -120,9 +121,13 @@ export const firstContract: Card = {
  */
 export const testimonialOrOneMore: Card = {
   id: 'testimonial-or-one-more',
-  category: 'contract',
+  category: 'retirement',
   kind: 'scheduled',
-  beat: 'retirement',
+  stages: ['decline', 'twilight'],
+  // Asked again every season once the window opens. Without this it fires once
+  // at thirty-three, he says one more year, and nobody asks him again until he
+  // is forty.
+  cooldownSeasons: 1,
   eligibility: (c) => c.state.player.age >= 33,
   weight: (c) => 60 + (c.state.player.age - 33) * 20,
   title: (c) => `${currentClub(c).name} want to talk about the end`,

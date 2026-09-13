@@ -23,6 +23,31 @@ export type Category =
 
 export type CardKind = 'scheduled' | 'opportunistic';
 
+/**
+ * Career stages. A career that reaches a stage with nothing to say falls back
+ * to generic cards, and that is where a run starts feeling thin — so the set is
+ * organised by stage and a test checks every stage is served.
+ */
+export type Stage = 'youth' | 'breakthrough' | 'prime' | 'decline' | 'twilight';
+
+export const STAGES: readonly Stage[] = ['youth', 'breakthrough', 'prime', 'decline', 'twilight'];
+
+export const STAGE_AGES: Record<Stage, { from: number; to: number }> = {
+  youth: { from: 16, to: 19 },
+  breakthrough: { from: 19, to: 23 },
+  prime: { from: 23, to: 30 },
+  decline: { from: 30, to: 34 },
+  twilight: { from: 34, to: 99 },
+};
+
+export function stageForAge(age: number): Stage {
+  if (age < 19) return 'youth';
+  if (age < 23) return 'breakthrough';
+  if (age < 30) return 'prime';
+  if (age < 34) return 'decline';
+  return 'twilight';
+}
+
 // ---------------------------------------------------------------------------
 // Modifiers
 // ---------------------------------------------------------------------------
@@ -141,6 +166,8 @@ export interface Card {
   id: string;
   category: Category;
   kind: CardKind;
+  /** Stages this card belongs to. Used by the coverage matrix and the weighting. */
+  stages: Stage[];
   /** Scheduled cards name the beat they answer. */
   beat?: string;
   eligibility: (c: Ctx) => boolean;

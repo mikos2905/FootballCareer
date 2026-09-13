@@ -22,14 +22,14 @@ export const TUNABLES = {
   standingRoundedGame: 4,
 
   // -- Club standing --------------------------------------------------------
-  clubStandingLoyaltyBonus: 8,
-  clubStandingLoyaltyLarge: 15,
+  clubStandingLoyaltyBonus: 11,
+  clubStandingLoyaltyLarge: 20,
   clubStandingMercenaryPenalty: 22,
-  clubStandingAgitationPenalty: 9,
+  clubStandingAgitationPenalty: 13,
   clubStandingDerbyHero: 28,
   clubStandingCaptaincy: 10,
   clubStandingTestimonial: 14,
-  clubStandingSnub: 10,
+  clubStandingSnub: 13,
 
   // -- Manager relationship -------------------------------------------------
   managerTrustGain: 18,
@@ -39,15 +39,15 @@ export const TUNABLES = {
 
   // -- Morale and form ------------------------------------------------------
   moraleBoostSmall: 5,
-  moraleBoostLarge: 9,
+  moraleBoostLarge: 12,
   moraleHitSmall: 4,
-  moraleHitLarge: 8,
+  moraleHitLarge: 11,
 
   // -- Condition ------------------------------------------------------------
-  wearFromPlayingInjured: 12,
+  wearFromPlayingInjured: 16,
   wearFromHardPreSeason: 5,
   wearRelievedByRest: 7,
-  injuryPronenessFromPlayingInjured: 6,
+  injuryPronenessFromPlayingInjured: 9,
 
   // -- Development ----------------------------------------------------------
   developmentPenaltyBenchSeason: 0.45,
@@ -111,6 +111,23 @@ export const TUNABLES = {
   giantBreakthroughChance: 0.5,
   gulfCallUpSurvivalChance: 0.25,
   captaincyWeighsChance: 0.45,
+
+  // -- Ceiling ---------------------------------------------------------------
+  ceilingGainCoaching: 6,
+  ceilingGainSpecialist: 9,
+  ceilingLossNeglect: 6,
+
+  // -- Attributes ------------------------------------------------------------
+  attributeGainSmall: 3,
+  attributeGainLarge: 6,
+  attributeLossSmall: 3,
+  attributeLossLarge: 6,
+
+  // -- More probabilities ----------------------------------------------------
+  breakthroughChance: 0.4,
+  gambleLandsChance: 0.5,
+  longShotChance: 0.25,
+  likelyChance: 0.68,
 
   // -- Delays ---------------------------------------------------------------
   delayShort: 2,

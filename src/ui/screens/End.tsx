@@ -39,6 +39,32 @@ export function End(): JSX.Element {
       <h1 className="mt-1 text-3xl font-bold">{career.ending.label}</h1>
       <p className="mt-2 text-base leading-relaxed">{career.ending.verdict}</p>
 
+      <h2 className="mt-5 text-sm font-semibold">
+        Career score{' '}
+        <span className="text-base font-bold tabular-nums">{Math.round(career.ending.careerScore)}</span>
+        <span className="font-normal text-slate-600"> / 100</span>
+      </h2>
+      <ul className="mt-1 space-y-1">
+        {career.ending.scoreLines.map((line) => (
+          <li key={line.label} className="rounded border border-slate-400 bg-white px-3 py-1.5 text-sm">
+            <div className="flex justify-between gap-2">
+              <span className="font-semibold">{line.label}</span>
+              <span className="tabular-nums">
+                {line.value.toFixed(1)} / {line.of}
+              </span>
+            </div>
+            {/* A bar, so where the points came from is readable at a glance. */}
+            <div className="mt-1 h-1.5 w-full bg-slate-200">
+              <div
+                className="h-1.5 bg-slate-900"
+                style={{ width: `${Math.round((line.value / line.of) * 100)}%` }}
+              />
+            </div>
+            <p className="mt-1 text-xs text-slate-600">{line.detail}</p>
+          </li>
+        ))}
+      </ul>
+
       <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-1 rounded border border-slate-400 bg-white p-3 text-sm">
         {totals.map(([label, value]) => (
           <div key={label} className="flex justify-between gap-2 border-b border-slate-200 py-0.5">

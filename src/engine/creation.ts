@@ -188,6 +188,7 @@ export function createCareer(
         clubId: club.id,
         // A boy who came through the academy starts with goodwill in the bank.
         standing: 32,
+        goodwill: 6,
         seasonsServed: 0,
         appearances: 0,
         goals: 0,

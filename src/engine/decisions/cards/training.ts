@@ -13,9 +13,9 @@ export const trainingFocus: Card = {
   id: 'training-focus',
   category: 'training',
   kind: 'opportunistic',
-  cooldownSeasons: 3,
+  stages: ['youth', 'breakthrough', 'prime', 'decline'],
   eligibility: (c) => c.state.player.age >= 17,
-  weight: () => 50,
+  weight: () => 22,
   prepare: (state) => {
     const def = position(state.player.position);
     // The two attributes his position leans on hardest, and the weakest thing
@@ -157,6 +157,7 @@ export const seasonalOutlook: Card = {
   id: 'seasonal-outlook',
   category: 'lifestyle',
   kind: 'opportunistic',
+  stages: ['youth', 'breakthrough', 'prime', 'decline', 'twilight'],
   eligibility: () => true,
   weight: () => 1,
   title: (c) =>

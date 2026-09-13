@@ -1,4 +1,10 @@
-import { analyseCard, AXES, DEFAULT_THRESHOLDS, type CardReport } from '../../src/engine/decisions/balance';
+import {
+  analyseCard,
+  AXES,
+  DEFAULT_THRESHOLDS,
+  sampleAllStates,
+  type CardReport,
+} from '../../src/engine/decisions/balance';
 import { CARDS } from '../../src/engine/decisions/registry';
 import type { StrategyName } from '../../src/engine/strategies';
 import { pad } from './format';
@@ -15,6 +21,16 @@ export interface BalanceRunOptions {
 
 export function runBalance(opts: BalanceRunOptions, onProgress?: (id: string) => void): CardReport[] {
   const configs = Array.from({ length: opts.pool }, (_, i) => configFor(opts.run.startSeed + i, opts.run));
+
+  // One walk of the pool snapshots decision points for every card at once.
+  // Sampling inside analyseCard would replay the pool once per card.
+  const sampled = sampleAllStates(
+    opts.cardIds,
+    world,
+    { configs, strategies: opts.strategies, limit: opts.samples },
+    (done, total) => onProgress?.(`sampling ${done}/${total}`),
+  );
+
   const reports: CardReport[] = [];
   for (const cardId of opts.cardIds) {
     onProgress?.(cardId);
@@ -24,6 +40,7 @@ export function runBalance(opts: BalanceRunOptions, onProgress?: (id: string) =>
         continuations: opts.continuations,
         configs,
         strategies: opts.strategies,
+        sampled: sampled.get(cardId) ?? [],
       }),
     );
   }

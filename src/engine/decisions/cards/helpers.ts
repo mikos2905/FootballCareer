@@ -1,8 +1,10 @@
 import { clubLeagueId, clubStrength } from '../../league';
+import { position } from '../../positions';
 import { generateLoanOffers, generateOffers } from '../../transfers';
 import type { CareerState, TransferOffer } from '../../types';
 import type { World } from '../../world';
-import type { Ctx, Effect } from '../types';
+import type { AttributeKey } from '../../types';
+import type { Ctx, Effect, ImmediateChange, ModifierChannel, StandingTarget } from '../types';
 
 /** Short money, the way a newspaper would print it. */
 export function money(value: number): string {
@@ -81,3 +83,97 @@ export function mostMinutesIndex(offers: readonly TransferOffer[]): number {
 }
 
 export const noEffects = (): Effect[] => [];
+
+/**
+ * The three attributes a player's rating actually leans on.
+ *
+ * A striker's OVR is thirty per cent shooting and seven per cent passing, so
+ * `ceiling: { passing: 6 }` moves his rating by four tenths of a point. Cards
+ * that mean "this changed what he could become" have to say it in the
+ * attributes his position is rated on, or the sentence is a lie for nine
+ * positions out of twelve.
+ */
+function coreAttributes(c: Ctx): AttributeKey[] {
+  const weights = position(c.state.player.position).weights;
+  return (Object.keys(weights) as AttributeKey[])
+    .sort((a, b) => (weights[b] ?? 0) - (weights[a] ?? 0))
+    .slice(0, 3);
+}
+
+function spread(c: Ctx, ovrPoints: number): Partial<Record<AttributeKey, number>> {
+  const weights = position(c.state.player.position).weights;
+  const core = coreAttributes(c);
+  const share = core.reduce((sum, key) => sum + (weights[key] ?? 0), 0);
+  if (share <= 0) return {};
+  // Weighted so the three together move OVR by roughly ovrPoints, whatever the
+  // position: a goalkeeper leans on two attributes, a winger on five.
+  const per = ovrPoints / share;
+  const out: Partial<Record<AttributeKey, number>> = {};
+  for (const key of core) out[key] = Math.round(per * 10) / 10;
+  return out;
+}
+
+/**
+ * A ceiling change denominated in OVR rather than in attribute points, spread
+ * across what this player's position is rated on. Positive raises what he could
+ * become; negative closes it off.
+ */
+export const ceilingBy = (c: Ctx, ovrPoints: number): ImmediateChange => ({
+  ceiling: spread(c, ovrPoints),
+});
+
+/** The same, applied to what he is now rather than what he could be. */
+export const attributesBy = (c: Ctx, ovrPoints: number): ImmediateChange => ({
+  attributes: spread(c, ovrPoints),
+});
+
+// ---------------------------------------------------------------------------
+// Effect builders
+// ---------------------------------------------------------------------------
+
+/** An immediate change. */
+export const now = (change: ImmediateChange): Effect => ({ kind: 'immediate', change });
+
+/** A durational modifier the season simulation reads while it is alive. */
+export const mod = (
+  channel: ModifierChannel,
+  value: number,
+  seasons: number,
+  label: string,
+): Effect => ({ kind: 'modifier', modifier: { channel, value, seasons, label } });
+
+/** A training focus, which is a modifier on attributes rather than a number. */
+export const focus = (attributes: AttributeKey[], seasons: number, label: string): Effect => ({
+  kind: 'modifier',
+  modifier: { channel: 'focus', attributes, seasons, label },
+});
+
+/** An effect that lands N seasons from now. */
+export const later = (seasons: number, label: string, effects: Effect[]): Effect => ({
+  kind: 'delayed',
+  seasons,
+  label,
+  effects,
+});
+
+/** An effect that may or may not happen, drawn on the decisions substream. */
+export const maybe = (
+  chance: number,
+  label: string,
+  then: Effect[],
+  otherwise?: Effect[],
+): Effect => ({ kind: 'probabilistic', chance, label, then, ...(otherwise ? { otherwise } : {}) });
+
+/** Standing at the club he is at right now. */
+export const here = (amount: number): { target: StandingTarget; amount: number } => ({
+  target: { kind: 'current' },
+  amount,
+});
+
+export const stay: Effect = { kind: 'stay' };
+export const retire: Effect = { kind: 'retire' };
+export const moveTo = (offerIndex: number, reason: 'money' | 'ambition' | 'loyalty' | 'loan' | 'free' | 'forced'): Effect => ({
+  kind: 'transfer',
+  offerIndex,
+  reason,
+});

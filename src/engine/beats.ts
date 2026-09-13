@@ -18,8 +18,20 @@ export type BeatId =
   | 'national-decision'
   | 'retirement';
 
-export const RETIREMENT_WINDOW_OPENS = 33;
+export const RETIREMENT_WINDOW_OPENS = 32;
 export const RETIREMENT_FORCED_AT = 40;
+/**
+ * How often the retirement question is actually put once the window is open.
+ *
+ * Due every season, it starved the whole of late career: beats outrank the
+ * weighted draw, so from thirty-three onwards every single decision point was
+ * the same question about stopping, and not one card written for the twilight
+ * ever came up. A player nearing the end should be asked now and then, not
+ * annually — and always when the body or the calendar forces it.
+ */
+export const RETIREMENT_BEAT_GAP = 2;
+/** Wear above which the question is put regardless of when it was last asked. */
+export const RETIREMENT_WEAR_PROMPT = 68;
 /** No more than this many seasons may pass without a transfer-window beat. */
 export const TRANSFER_WINDOW_MAX_GAP = 3;
 
@@ -51,7 +63,17 @@ export function dueBeats(state: CareerState, world: World): BeatId[] {
   const { player } = state;
   const lastSeason = state.seasons[state.seasons.length - 1];
 
-  if (player.age >= RETIREMENT_WINDOW_OPENS) due.push('retirement');
+  if (player.age >= RETIREMENT_WINDOW_OPENS) {
+    const lastAsked = firedAt(state, 'retirement');
+    const since = lastAsked === null ? Infinity : state.season - lastAsked;
+    // Past thirty-five the question is live every summer whatever the answer
+    // was last time, because at that age it is.
+    const pressing =
+      player.age >= 35 ||
+      player.age >= RETIREMENT_FORCED_AT - 1 ||
+      state.condition.wear >= RETIREMENT_WEAR_PROMPT;
+    if (since >= RETIREMENT_BEAT_GAP || pressing) due.push('retirement');
+  }
 
   if (!hasFired(state, 'first-contract') && state.season >= 1) {
     due.push('first-contract');

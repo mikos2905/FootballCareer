@@ -122,6 +122,7 @@ function standingFor(state: CareerState, clubId: string): ClubStanding {
     found = {
       clubId,
       standing: 20,
+      goodwill: 0,
       seasonsServed: 0,
       appearances: 0,
       goals: 0,
@@ -529,8 +530,12 @@ function commitSeason(
     (record.averageRating > 0 ? (record.averageRating - 6.55) * 22 : -12) +
     (outcome.minutes.swing === 'frozen-out' ? -25 : 0) +
     (outcome.minutes.swing === 'opportunity' ? 6 : 0);
+  // Retained harder than it is re-earned, so what a decision did to the
+  // relationship survives more than the one season. At 0.55 a card that bought
+  // the manager's trust had spent it again by the following August, which made
+  // every dressing-room card in the set a decoration.
   state.condition.managerRelationship = clamp(
-    state.condition.managerRelationship * 0.55 + managerShift,
+    state.condition.managerRelationship * 0.7 + managerShift * 0.75,
     -100,
     100,
   );
@@ -541,13 +546,22 @@ function commitSeason(
   standing.goals += record.goals;
   standing.assists += record.assists;
   standing.trophiesWon += record.trophies.filter((t) => t.clubId !== null).length;
+  // Where he stands with these supporters: a view that converges on what he has
+  // earned, not a counter that accumulates.
+  //
+  // Adding `served * 1.3` every season meant tenure alone carried anyone who
+  // stayed eight years to the ceiling — a quarter of all careers maxed out
+  // regardless of how they played, which made the Statue ending cheap and the
+  // club standing axis unreadable, because every card that moved it was moving
+  // a number already pinned at 99.
   const served = Math.min(standing.seasonsServed, 12);
   const performance = record.averageRating > 0 ? (record.averageRating - 6.5) * 9 : -3;
-  standing.standing = clamp(
-    standing.standing + served * 1.3 + performance + record.trophies.filter((t) => t.clubId !== null).length * 6,
+  const target = clamp(
+    36 + served * 2.9 + performance * 2.2 + standing.trophiesWon * 5.5 + standing.goodwill,
     1,
     99,
   );
+  standing.standing = clamp(standing.standing + (target - standing.standing) * 0.42, 1, 99);
 
   record.events = events;
   state.trophies.push(...record.trophies);

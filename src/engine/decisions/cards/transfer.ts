@@ -15,9 +15,9 @@ export const benchAtGiant: Card = {
   id: 'bench-at-a-giant',
   category: 'transfer',
   kind: 'opportunistic',
+  stages: ['breakthrough', 'prime'],
   // Rare on purpose: a giant coming in is the event of a career, and if it
   // happens every other season everybody ends up in the big five.
-  cooldownSeasons: 7,
   eligibility: (c) =>
     c.state.player.age <= 26 &&
     (c.subject.offers?.length ?? 0) > 0 &&
@@ -161,7 +161,7 @@ export const loanOrFight: Card = {
   id: 'loan-or-fight',
   category: 'loan',
   kind: 'opportunistic',
-  cooldownSeasons: 2,
+  stages: ['youth', 'breakthrough'],
   eligibility: (c) => {
     const last = lastSeason(c);
     return c.state.player.age <= 23 && (c.subject.offers?.length ?? 0) > 0 && (last?.minutes ?? 0) < 1400;
@@ -267,7 +267,7 @@ export const gulfMove: Card = {
   id: 'agent-wants-gulf',
   category: 'transfer',
   kind: 'opportunistic',
-  cooldownSeasons: 7,
+  stages: ['prime', 'decline'],
   eligibility: (c) => (c.subject.offers?.length ?? 0) > 0 && c.state.player.age >= 26,
   weight: (c) => (c.state.player.age >= 29 ? 70 : 30),
   prepare: (state, world, rng) => {

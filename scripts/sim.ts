@@ -5,6 +5,9 @@ import { TIER_LABELS, type EndingTier } from '../src/engine/endings';
 import { isCareerAltering } from '../src/engine/injuries';
 import type { Cadence, PositionId } from '../src/engine/types';
 import { allCardIds, printCardDetail, printHealthTable, runBalance } from './lib/balance';
+import { CATEGORIES, coverageGaps, coverageMatrix } from '../src/engine/decisions/coverage';
+import { STAGES } from '../src/engine/decisions/types';
+import { CARDS } from '../src/engine/decisions/registry';
 import { bimodalityFlag, describe, histogram, money, pad, percentile } from './lib/format';
 import { metricsFor, runMany, runOne, world, type RunOptions } from './lib/run';
 import type { Career } from '../src/engine/career';
@@ -25,7 +28,7 @@ interface Args {
   strategy: StrategyName | 'mixed';
   nation: string;
   cadence: Cadence;
-  report: 'summary' | 'career' | 'histogram' | 'cards' | 'dominance';
+  report: 'summary' | 'career' | 'histogram' | 'cards' | 'dominance' | 'coverage' | 'endings' | 'strategies' | 'repetition';
   seed: number | null;
   metric: string;
   card: string | null;
@@ -385,7 +388,7 @@ function reportCards(args: Args): void {
       cardIds: ids,
       samples: args.samples,
       continuations: args.continuations,
-      pool: Math.max(60, args.samples * 3),
+      pool: Math.max(240, args.samples * 10),
       strategies: args.strategy === 'mixed' ? [...STRATEGY_NAMES] : [args.strategy],
       run: toOptions(args),
     },
@@ -402,11 +405,148 @@ function reportDominance(args: Args): void {
     cardIds: [args.card],
     samples: args.samples,
     continuations: args.continuations,
-    pool: Math.max(60, args.samples * 3),
+    pool: Math.max(240, args.samples * 10),
     strategies: args.strategy === 'mixed' ? [...STRATEGY_NAMES] : [args.strategy],
     run: toOptions(args),
   });
   if (report) printCardDetail(report);
+}
+
+/** Stage by category, with the count of cards in each cell. */
+function reportCoverage(): void {
+  const cells = coverageMatrix();
+  console.log('');
+  console.log(pad('', 16) + STAGES.map((s) => pad(s.slice(0, 12), 14, 'r')).join(''));
+  console.log('-'.repeat(16 + STAGES.length * 14));
+  for (const category of CATEGORIES) {
+    const row = STAGES.map((stage) => {
+      const cell = cells.find((c) => c.stage === stage && c.category === category);
+      if (!cell) return pad('?', 14, 'r');
+      if (cell.cards.length > 0) return pad(String(cell.cards.length), 14, 'r');
+      return pad(cell.exemptReason ? '--' : 'GAP', 14, 'r');
+    }).join('');
+    console.log(pad(category, 16) + row);
+  }
+  console.log('');
+  for (const stage of STAGES) {
+    const total = CARDS.filter((c) => c.stages.includes(stage)).length;
+    console.log(`  ${pad(stage, 16)} ${total} cards`);
+  }
+  console.log(`  ${pad('total', 16)} ${CARDS.length} cards`);
+  console.log('');
+  const exempt = cells.filter((c) => c.cards.length === 0 && c.exemptReason !== null);
+  console.log('deliberately empty:');
+  for (const cell of exempt) console.log(`  ${pad(`${cell.stage}:${cell.category}`, 26)} ${cell.exemptReason}`);
+  const gaps = coverageGaps();
+  console.log('');
+  console.log(gaps.length === 0 ? 'No undocumented gaps.' : `GAPS: ${gaps.map((g) => `${g.stage}:${g.category}`).join(', ')}`);
+  console.log('');
+}
+
+/** How careers end, against the band the brief asks for. */
+function reportEndings(args: Args): void {
+  const careers = runMany(toOptions(args), (done) => process.stderr.write(`\r  ${done}/${args.seeds}`));
+  process.stderr.write('\r' + ' '.repeat(24) + '\r');
+  const counts = new Map<EndingTier, number>();
+  for (const c of careers) counts.set(c.ending.tier, (counts.get(c.ending.tier) ?? 0) + 1);
+  const rows = [...counts].sort((a, b) => b[1] - a[1]);
+  console.log(`\n=== ending tiers  (${careers.length} careers, strategy=${args.strategy}) ===\n`);
+  let worst = '';
+  for (const [tier, n] of rows) {
+    const share = (n / careers.length) * 100;
+    const flag = share < 2 ? 'UNDER 2%' : share > 40 ? 'OVER 40%' : 'ok';
+    if (flag !== 'ok') worst = flag;
+    console.log(
+      pad(TIER_LABELS[tier], 24) + pad(n, 7, 'r') + pad(`${share.toFixed(1)}%`, 9, 'r') + '  ' + flag,
+    );
+  }
+  for (const tier of Object.keys(TIER_LABELS) as EndingTier[]) {
+    if (!counts.has(tier)) {
+      worst = 'UNDER 2%';
+      console.log(pad(TIER_LABELS[tier], 24) + pad(0, 7, 'r') + pad('0.0%', 9, 'r') + '  UNDER 2%');
+    }
+  }
+  console.log('');
+  console.log(worst === '' ? 'All tiers within 2-40%.' : 'OUT OF BAND.');
+  console.log('');
+}
+
+/**
+ * Do the three strategies produce overlapping careers?
+ *
+ * If greedy beats loyal on career score across most seeds, the idol path is
+ * decoration and the second win condition does not exist.
+ */
+function reportStrategies(args: Args): void {
+  console.log(`\n=== strategy comparison  (${args.seeds} seeds each) ===\n`);
+  const byStrategy = new Map<StrategyName, number[]>();
+  for (const strategy of STRATEGY_NAMES) {
+    process.stderr.write(`\r  ${strategy}        `);
+    const careers = runMany({ ...toOptions(args), strategy });
+    byStrategy.set(strategy, careers.map((c) => c.ending.careerScore));
+  }
+  process.stderr.write('\r' + ' '.repeat(24) + '\r');
+  for (const [strategy, scores] of byStrategy) console.log(describe(strategy, scores, 1));
+  console.log('');
+
+  // Overlap, measured as the share of one strategy's careers that fall inside
+  // the other's interquartile range. Two strategies that are really
+  // alternatives sit largely on top of each other.
+  const names = [...byStrategy.keys()];
+  let worstOverlap = 1;
+  for (let i = 0; i < names.length; i += 1) {
+    for (let j = i + 1; j < names.length; j += 1) {
+      const a = byStrategy.get(names[i]!)!;
+      const b = byStrategy.get(names[j]!)!;
+      const sortedB = [...b].sort((x, y) => x - y);
+      const lo = percentile(sortedB, 0.25);
+      const hi = percentile(sortedB, 0.75);
+      const inside = a.filter((v) => v >= lo && v <= hi).length / a.length;
+      worstOverlap = Math.min(worstOverlap, inside);
+      const meanA = a.reduce((x, y) => x + y, 0) / a.length;
+      const meanB = b.reduce((x, y) => x + y, 0) / b.length;
+      console.log(
+        pad(`${names[i]} vs ${names[j]}`, 26) +
+          pad(`gap ${(meanA - meanB).toFixed(1)}`, 12, 'r') +
+          pad(`overlap ${(inside * 100).toFixed(0)}%`, 16, 'r'),
+      );
+    }
+  }
+  console.log('');
+  console.log(
+    worstOverlap >= 0.3
+      ? 'Distributions overlap substantially.'
+      : 'ONE STRATEGY DOMINATES — the alternative paths are decoration.',
+  );
+  console.log('');
+}
+
+/** Nothing twice in one career, and no card in most careers. */
+function reportRepetition(args: Args): void {
+  const careers = runMany(toOptions(args));
+  const runsContaining = new Map<string, number>();
+  const repeats: string[] = [];
+  for (const career of careers) {
+    const seen = new Set<string>();
+    for (const d of career.decisions) {
+      if (seen.has(d.cardId)) repeats.push(`${career.config.seedLabel}: ${d.cardId}`);
+      seen.add(d.cardId);
+    }
+    for (const id of seen) runsContaining.set(id, (runsContaining.get(id) ?? 0) + 1);
+  }
+  console.log(`\n=== repetition  (${careers.length} careers) ===\n`);
+  const rows = [...runsContaining].sort((a, b) => b[1] - a[1]);
+  for (const [id, n] of rows.slice(0, 12)) {
+    const share = (n / careers.length) * 100;
+    console.log(pad(id, 28) + pad(`${share.toFixed(0)}%`, 8, 'r') + (share > 50 ? '  OVER HALF' : ''));
+  }
+  const never = CARDS.filter((c) => !runsContaining.has(c.id)).map((c) => c.id);
+  console.log('');
+  console.log(`repeats within a career: ${repeats.length === 0 ? 'none' : repeats.slice(0, 10).join(', ')}`);
+  console.log(`cards never seen in ${careers.length} careers: ${never.length === 0 ? 'none' : never.join(', ')}`);
+  const overHalf = rows.filter(([, n]) => n / careers.length > 0.5);
+  console.log(`cards in more than half of runs: ${overHalf.length === 0 ? 'none' : overHalf.map(([id]) => id).join(', ')}`);
+  console.log('');
 }
 
 const args = parseArgs(process.argv.slice(2));
@@ -415,4 +555,8 @@ else if (args.report === 'career') reportCareer(args);
 else if (args.report === 'histogram') reportHistogram(args);
 else if (args.report === 'cards') reportCards(args);
 else if (args.report === 'dominance') reportDominance(args);
+else if (args.report === 'coverage') reportCoverage();
+else if (args.report === 'endings') reportEndings(args);
+else if (args.report === 'strategies') reportStrategies(args);
+else if (args.report === 'repetition') reportRepetition(args);
 else throw new Error(`Unknown report ${args.report}`);

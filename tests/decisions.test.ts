@@ -14,8 +14,9 @@ function freshState(seed: number) {
 }
 
 describe('card set', () => {
-  it('has the ten cards the brief asks for, plus the seasonal fallback', () => {
-    expect(CARDS.length).toBe(11);
+  it('covers the whole career with the set the brief asks for', () => {
+    expect(CARDS.length).toBeGreaterThanOrEqual(60);
+    expect(CARDS.length).toBeLessThanOrEqual(80);
     for (const id of [
       'first-contract',
       'bench-at-a-giant',
@@ -194,6 +195,7 @@ describe('the delayed queue', () => {
     next.clubStandings.push({
       clubId: other.id,
       standing: 50,
+      goodwill: 0,
       seasonsServed: 0,
       appearances: 0,
       goals: 0,

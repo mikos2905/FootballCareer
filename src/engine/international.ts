@@ -84,12 +84,22 @@ export function simulateInternationalSeason(
   const score = selectionScore(player.ovr, league);
   const threshold = callUpThreshold(nation.strength);
 
+  // Standing in the squad is its own currency, not just a multiplier once you
+  // are in it. A player who has been a fixture for years keeps getting picked
+  // through a dip in club form; one who pulled out of a tournament finds the
+  // manager has moved on, whatever his rating says. Without this the whole
+  // international side of the game was decided by OVR alone, and every card
+  // that traded on the manager's goodwill was spending a currency nothing read.
+  const standingEdge = ((national.standing - 45) / 100) * 12;
+
   // Being in the squad at all depends on playing club football.
-  if (score < threshold || seasonRecord.minutes < 900) return idle;
+  if (score + standingEdge < threshold || seasonRecord.minutes < 900) return idle;
 
   const margin = score - threshold;
   const target = clamp(35 + margin * 4.5, 0, 100);
-  const standing = clamp(national.standing + (target - national.standing) * 0.5, 0, 100);
+  // Slower convergence than performance alone would give: a reputation with an
+  // international manager is built and lost over seasons, not in one.
+  const standing = clamp(national.standing + (target - national.standing) * 0.35, 0, 100);
 
   const tournamentId = tournamentForYear(world, nation.confederation, state.year);
   const baseCaps = 3.5 + (standing / 100) * 6.5 + (tournamentId ? 3 : 0);

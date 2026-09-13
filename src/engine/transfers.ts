@@ -108,10 +108,10 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
       // Lower than it was in phase 2: the decision cards now supply a share of
       // the movement in a career, so the mechanical market has to make room for
       // them or everybody ends up having played for eight clubs.
-      0.08 + (player.reputation / 100) * 0.32 + (inputs.recentOutput - 0.8) * 0.18 +
-        (state.contractYearsRemaining <= 1 ? 0.22 : 0),
-      0.05,
-      0.7,
+      0.05 + (player.reputation / 100) * 0.26 + (inputs.recentOutput - 0.8) * 0.15 +
+        (state.contractYearsRemaining <= 1 ? 0.18 : 0),
+      0.03,
+      0.6,
     );
     if (!rng.chance(interest)) return [];
   }
@@ -147,7 +147,7 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
     // The strongest leagues shop from a shortlist. A good player nobody has
     // heard of does not get a call from one, however capable he is.
     const eliteBar =
-      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 51 + club.prestige * 0.25 : true;
+      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 56 + club.prestige * 0.25 : true;
 
     return affordable && known && eliteBar && (level || moneyTalks) && league.tier <= (player.ovr >= 68 ? 2 : 3);
   });

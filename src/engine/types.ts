@@ -153,6 +153,15 @@ export interface ClubStanding {
   clubId: string;
   /** 1-99. Rises with service, trophies and loyalty; falls hard on a move for money. */
   standing: number;
+  /**
+   * What decisions did to the relationship, kept apart from what playing did.
+   *
+   * Standing converges on a target earned by service and performance, so a
+   * bonus added straight to it is most of the way gone by the next August.
+   * Goodwill feeds the target instead, which is what "the supporters have not
+   * forgotten that" actually means.
+   */
+  goodwill: number;
   seasonsServed: number;
   appearances: number;
   goals: number;
