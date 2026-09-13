@@ -358,7 +358,6 @@ const finalContract: Card = {
   category: 'contract',
   kind: 'opportunistic',
   stages: ['twilight'],
-  beat: 'retirement',
   eligibility: (c) => c.state.player.age >= 34,
   weight: () => 60,
   title: () => 'One year, and everyone knows it is the last one',
@@ -392,7 +391,6 @@ const exoticLastMove: Card = {
   category: 'transfer',
   kind: 'opportunistic',
   stages: ['twilight'],
-  beat: 'retirement',
   oncePerCareer: true,
   eligibility: (c) => c.state.player.age >= 34 && (c.subject.offers?.length ?? 0) > 0,
   weight: () => 45,
@@ -518,7 +516,6 @@ const comeHomeToStop: Card = {
   category: 'loyalty',
   kind: 'opportunistic',
   stages: ['twilight'],
-  beat: 'retirement',
   oncePerCareer: true,
   eligibility: (c) => {
     const best = [...c.state.clubStandings].sort((a, b) => b.standing - a.standing)[0];

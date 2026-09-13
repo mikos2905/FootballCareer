@@ -1,5 +1,5 @@
 import { clubStrength } from '../../league';
-import { buildOffer } from '../../transfers';
+import { buildOffer, isVisibleTo } from '../../transfers';
 import { TUNABLES as T } from '../tunables';
 import type { Card, Effect } from '../types';
 import { currentClub, here, later, maybe, mod, money, moveTo, now, seasonsAt, standingAt, stay } from './helpers';
@@ -72,6 +72,7 @@ const championsLeagueMove: Card = {
         club.id !== state.clubId &&
         league.continental === 'elite' &&
         club.prestige >= 72 &&
+        isVisibleTo(state, world, club.id) &&
         strength - state.player.ovr >= -4 &&
         strength - state.player.ovr <= 10
       );

@@ -1,5 +1,5 @@
 import { clubStrength } from '../../league';
-import { buildOffer } from '../../transfers';
+import { buildOffer, isVisibleTo } from '../../transfers';
 import { TUNABLES as T } from '../tunables';
 import type { Card, Effect } from '../types';
 import { currentClub, focus, here, later, lastSeason, maybe, mod, money, moveTo, now, stay } from './helpers';
@@ -74,7 +74,12 @@ const stepUpOrConsolidate: Card = {
   prepare: (state, world, rng) => {
     const candidates = world.data.clubs.filter((club) => {
       const strength = clubStrength(state.world, club.id);
-      return club.id !== state.clubId && strength - state.player.ovr >= 2 && strength - state.player.ovr <= 7;
+      return (
+        club.id !== state.clubId &&
+        strength - state.player.ovr >= 2 &&
+        strength - state.player.ovr <= 7 &&
+        isVisibleTo(state, world, club.id)
+      );
     });
     if (candidates.length === 0) return { offers: [] };
     const club = rng.weighted(candidates, (x) => 0.5 + x.prestige / 90);

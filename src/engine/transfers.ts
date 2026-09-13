@@ -94,10 +94,28 @@ export interface OfferInputs {
  * Generates the clubs that actually bid. Returns an empty list when nobody
  * wants the player — which, for a player out of contract, is how a career ends.
  */
+/**
+ * Has this club heard of him?
+ *
+ * A glamorous club needs the player to be visible, which is what makes a
+ * lucrative move to a quiet league cost something — but being genuinely
+ * outstanding gets you noticed wherever you are playing. Scouts do watch Major
+ * League Soccer.
+ *
+ * Exported because the cards that build their own offers need the same rule.
+ * A card that hands a player a Champions League club without it is a back door
+ * around the market, and the market is where the cost of a quiet league lives.
+ */
+export function isVisibleTo(state: CareerState, world: World, clubId: string): boolean {
+  const club = world.club(clubId);
+  const currentLeague = world.league(clubLeagueId(state.world, state.clubId));
+  const { player } = state;
+  return player.reputation + player.ovr * 0.5 + currentLeague.prestige * 0.2 >= club.prestige * 0.72 + 6;
+}
+
 export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
   const { state, world } = inputs;
   const { player } = state;
-  const currentLeague = world.league(clubLeagueId(state.world, state.clubId));
   const rating = selectionRating(player.attributes, player.position);
 
   // Concrete offers do not arrive every summer. A player under contract who had
@@ -131,12 +149,7 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
     const tolerance = player.age <= 21 ? 10 : player.age <= 24 ? 5 : 2;
     const level = below <= tolerance && above <= 11;
 
-    // Nobody signs a player they have never heard of. A glamorous club needs
-    // the player to be visible, which is what makes a lucrative move to a quiet
-    // league cost something — but being genuinely outstanding gets you noticed
-    // wherever you are playing. Scouts do watch Major League Soccer.
-    const known =
-      player.reputation + player.ovr * 0.5 + currentLeague.prestige * 0.2 >= club.prestige * 0.72 + 6;
+    const known = isVisibleTo(state, world, club.id);
 
     // Money can always reach above a club's sporting level.
     const moneyTalks = club.wageBudget >= 78 && above <= 20 && player.reputation >= 40;
