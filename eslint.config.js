@@ -13,6 +13,35 @@ export default tseslint.config(
     },
   },
   {
+    /**
+     * Components render state and dispatch decisions. A component that computes
+     * an OVR, decides an outcome or reads a tunable is a bug, so src/ui may not
+     * import engine values at all — only types, and only so it can name what it
+     * is rendering. Everything else comes through src/state.
+     */
+    files: ['src/ui/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/engine/**', '../engine/*', '../../engine/*'],
+              allowTypeImports: true,
+              message:
+                'Components must not import engine values. Go through src/state, which is the only place the UI and the engine meet.',
+            },
+            {
+              group: ['**/data/**'],
+              allowTypeImports: true,
+              message: 'Components must not read the world data directly. Go through src/state.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // The engine is pure, deterministic and portable. Nothing here may reach
     // for ambient randomness, the clock, the DOM, or React.
     files: ['src/engine/**/*.ts'],

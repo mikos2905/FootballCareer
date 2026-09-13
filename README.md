@@ -6,7 +6,7 @@ in between until retirement.
 
 No accounts, no backend, no downloads.
 
-## Status: phase 3 complete
+## Status: phase 4 complete
 
 The build runs in phases, stopping for review after each one.
 
@@ -15,7 +15,7 @@ The build runs in phases, stopping for review after each one.
 | 1 | Engine skeleton, PRNG, determinism tests | **done** |
 | 2 | Season simulation and development curves, tuned from a CLI harness | **done** |
 | 3 | Decision system, ten cards, trade-off test | **done** |
-| 4 | Minimal React UI, mobile portrait, end to end | not started |
+| 4 | Minimal React UI, mobile portrait, end to end | **done** |
 | 5 | Full decision card set, endings, verdict text | not started |
 | 6 | End screen, share card, share URL | not started |
 | 7 | Visual design pass | not started |
@@ -64,8 +64,8 @@ how you get sixty-goal seasons.
 ```
 src/engine/   pure TypeScript. no React, no DOM, no I/O. state + decision -> new state
 src/data/     league, club, competition and nation JSON
-src/ui/       React components, presentation only        (phase 4)
-src/state/    the bridge holding the engine and driving the loop   (phase 4)
+src/ui/       React components, presentation only
+src/state/    the bridge holding the engine and driving the loop
 ```
 
 `src/engine/` never imports from `src/data/`. The engine is handed a `WorldData` and builds
@@ -103,11 +103,13 @@ npm run sim -- --report cards                    card health table, all cards
 npm run sim -- --report dominance --card derby-half-fit
 npm run cards -- --seed 1234                    play one career in the terminal
 
+npm run dev                 the game in a browser, phone portrait
 npx tsx scripts/probe.ts    print the model's expectations for archetypal inputs
 npx tsx scripts/pick.ts     find representative careers by career score
 ```
 
-See `docs/phase-2.md` for the simulation layer and `docs/phase-3.md` for the decision system.
+See `docs/phase-2.md` for the simulation layer, `docs/phase-3.md` for the decision system
+and `docs/phase-4.md` for the UI.
 
 Strategies (`greedy`, `loyal`, `random`, `balanced`) are stand-in decision policies for
 tuning only. Phase 3 replaces them with decision cards the player answers.
@@ -120,3 +122,5 @@ tuning only. Phase 3 replaces them with decision cards the player answers.
   a player's club being promoted rather than a transfer, and the decision cards' playing-time
   bonuses push marginal seasons over the 900-minute bar the metric counts.
 - **The card set is ten plus a fallback.** Phase 5 expands it.
+- **The UI is deliberately ugly.** Tailwind defaults and no animation until phase 7. The end
+  screen is a stub; phase 6 builds the real one with the share card and share URL.

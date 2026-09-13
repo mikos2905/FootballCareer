@@ -17,7 +17,7 @@ import { advanceWorld, clubLeagueId, clubStrength } from './league';
 import { computeOvr } from './ratings';
 import { clamp, substream } from './rng';
 import { recentOutputShare, simulateSeason, type SeasonModifiers } from './season';
-import { computeMarketValue, generateLoanOffers, generateOffers, renewalOffer } from './transfers';
+import { computeMarketValue, computeWage, generateLoanOffers, generateOffers, renewalOffer } from './transfers';
 import {
   MAX_AGE,
   type CareerConfig,
@@ -493,10 +493,20 @@ function commitSeason(
     recentOutput: recentOutputShare(record, state.player.position),
   });
   state.player.marketValue = record.marketValue;
-  // Wage is set by the contract, not recomputed every summer. Recomputing it
-  // here wiped every rise a card or a negotiation had won, which made wage
-  // effects last exactly one season and the money cards meaningless.
-  void club;
+  // Wage is set by the contract, so it is never recomputed downward — that
+  // wiped every rise a card or a negotiation had won. But a club does improve
+  // terms for a player who has outgrown the deal he signed, otherwise someone
+  // who broke through at nineteen is still on academy wages at twenty-four.
+  state.wage = Math.max(
+    state.wage,
+    computeWage({
+      ovr: state.player.ovr,
+      wageBudget: club.wageBudget,
+      reputation: state.player.reputation,
+      age: state.player.age,
+      role: record.squadRole,
+    }),
+  );
 
   // Condition carries forward. Wear never fully comes off.
   state.condition.wear = clamp(
