@@ -6,7 +6,7 @@ in between until retirement.
 
 No accounts, no backend, no downloads.
 
-## Status: phase 4 complete
+## Status: phase 5 complete
 
 The build runs in phases, stopping for review after each one.
 
@@ -16,7 +16,7 @@ The build runs in phases, stopping for review after each one.
 | 2 | Season simulation and development curves, tuned from a CLI harness | **done** |
 | 3 | Decision system, ten cards, trade-off test | **done** |
 | 4 | Minimal React UI, mobile portrait, end to end | **done** |
-| 5 | Full decision card set, endings, verdict text | not started |
+| 5 | Full decision card set, endings, verdict text | **done** |
 | 6 | End screen, share card, share URL | not started |
 | 7 | Visual design pass | not started |
 
@@ -116,11 +116,16 @@ tuning only. Phase 3 replaces them with decision cards the player answers.
 
 ## Known gaps, by design
 
-- **Endings are first-pass.** Tier thresholds in `endings.ts` have not been fitted to the
-  2%-40% distribution target; that is phase 5.
-- **Big-five reach sits at about 28%** against a 20-25% band. Roughly half of all entries are
-  a player's club being promoted rather than a transfer, and the decision cards' playing-time
-  bonuses push marginal seasons over the 900-minute bar the metric counts.
-- **The card set is ten plus a fallback.** Phase 5 expands it.
+- **Ten cards are still decoration.** The balance suite measures whether a card's options
+  actually produce different careers; thirty-five of sixty-one clear the bar, ten move nothing
+  measurable, and the rest are real but small. `npm test` names the ten. See `docs/phase-5.md`
+  for what the measurement does and `npm run sim -- --report cards` for the full table.
+- **Cadence is a difficulty setting.** Big-five reach is 29.9% / 26.1% / 20.6% at full,
+  standard and express cadence: more decisions means more agency means a better career. The
+  20-25% band is only met at the slower cadences. Either card magnitudes get normalised by
+  cadence, or the coupling is accepted and the band restated — a design call, not a bug to
+  quietly tune away.
+- **Club standing still saturates for the best careers.** It converges on an earned target
+  now rather than accumulating with tenure, but the top decile still reaches 99.
 - **The UI is deliberately ugly.** Tailwind defaults and no animation until phase 7. The end
   screen is a stub; phase 6 builds the real one with the share card and share URL.
