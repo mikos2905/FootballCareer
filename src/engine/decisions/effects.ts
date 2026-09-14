@@ -73,7 +73,14 @@ export function applyImmediate(state: CareerState, change: ImmediateChange): voi
     for (const key of ATTRIBUTE_KEYS) {
       const delta = change.ceiling[key];
       if (delta === undefined) continue;
-      player.ceiling[key] = clamp(player.ceiling[key] + delta, 1, 99);
+      // Ceilings stay whole numbers: a card spreading an OVR-denominated change
+      // across three attributes produces fractions, and a ceiling of 58.7 under
+      // an attribute of 59 breaks the one invariant the whole development model
+      // rests on.
+      player.ceiling[key] = Math.round(clamp(player.ceiling[key] + delta, 1, 99));
+      // Closing off the ceiling takes what is above it with it. You cannot be
+      // better than what you could become.
+      player.attributes[key] = Math.min(player.attributes[key], player.ceiling[key]);
     }
   }
   if (change.reputation !== undefined) {

@@ -1,6 +1,6 @@
 import { TUNABLES as T } from '../tunables';
 import type { Card } from '../types';
-import { currentClub, focus, here, later, maybe, mod, money, now } from './helpers';
+import { attributesBy, ceilingBy, currentClub, focus, here, later, maybe, mod, money, now } from './helpers';
 
 /**
  * Youth, sixteen to nineteen.
@@ -26,8 +26,9 @@ const scholarshipTerms: Card = {
       id: 'all-in',
       label: () => 'Leave school, take the scholarship',
       detail: () => 'Football, all day, every day. Nothing to fall back on.',
-      effects: () => [
+      effects: (c) => [
         now({ managerRelationship: T.managerTrustGain, clubStanding: here(T.clubStandingLoyaltyBonus) }),
+        now(ceilingBy(c, T.ceilingOvrLarge)),
         mod('development', T.developmentBonusFocused, 3, 'Training full time'),
       ],
     },
@@ -35,8 +36,9 @@ const scholarshipTerms: Card = {
       id: 'both',
       label: () => 'Keep the schooling going alongside it',
       detail: () => 'Evenings and weekends on the books. Less sleep, and a way out if this fails.',
-      effects: () => [
+      effects: (c) => [
         now({ wear: T.wearFromHardPreSeason }),
+        now(ceilingBy(c, -T.ceilingOvrLoss / 2)),
         mod('development', T.developmentPenaltyMild, 2, 'Split between two things'),
         later(T.delayLong, 'The qualifications turn out to be worth something', [
           now({ reputation: T.reputationGainCaptain }),
@@ -62,8 +64,9 @@ const leaveHomeClub: Card = {
       id: 'go',
       label: () => 'Take the bigger academy',
       detail: () => 'Better coaching, and you are one of forty rather than one of eleven.',
-      effects: () => [
-        now({ ceiling: { pace: 1, passing: 1, dribbling: 1 }, clubStanding: here(-T.clubStandingSnub) }),
+      effects: (c) => [
+        now({ clubStanding: here(-T.clubStandingSnub) }),
+        now(ceilingBy(c, T.ceilingOvrLarge)),
         mod('development', T.developmentBonusEliteCoaching, 3, 'Elite academy coaching'),
         mod('minutes', T.minutesPenaltySlight, 2, 'Queue at a big academy'),
       ],
@@ -96,9 +99,9 @@ const seniorProMentor: Card = {
       id: 'learn',
       label: () => 'Be there at half seven every Tuesday',
       detail: () => 'Thirty years of knowing where to stand, handed over for nothing.',
-      effects: () => [
-        now({ attributes: { passing: T.attributeGainSmall, defending: T.attributeGainSmall } }),
-        now({ ceiling: { passing: T.ceilingGainCoaching, flair: 1 } }),
+      effects: (c) => [
+        now(attributesBy(c, T.attributeOvrSmall)),
+        now(ceilingBy(c, T.ceilingOvrLarge)),
         mod('development', T.developmentBonusEliteCoaching, 2, 'Learning from someone who knows'),
       ],
     },
@@ -108,7 +111,7 @@ const seniorProMentor: Card = {
       detail: () => 'The manager watches the main session. He does not watch the extra one.',
       effects: () => [
         now({ managerRelationship: T.managerTrustGain }),
-        mod('minutes', T.minutesBonusTrusted, 2, 'Seen at the right sessions'),
+        mod('minutes', T.minutesBonusRegularFootball, 4, 'Kept in the side by a senior pro'),
       ],
     },
   ],
@@ -154,9 +157,10 @@ const reserveManagerDislikes: Card = {
       id: 'ask-to-move',
       label: () => 'Ask to train with a different group',
       detail: () => 'Away from him, and away from the games that get watched.',
-      effects: () => [
+      effects: (c) => [
         mod('minutes', T.minutesPenaltyReserves, 2, 'Out of the under-21 side'),
         mod('development', T.developmentBonusFocused, 2, 'Training with the first team'),
+        now(ceilingBy(c, -T.ceilingOvrLoss)),
       ],
     },
   ],
@@ -218,6 +222,7 @@ const growthSpurt: Card = {
       detail: () => 'Nobody is scouted from the treatment room.',
       effects: () => [
         mod('minutes', T.minutesPenaltyInjured, 1, 'Resting the knees'),
+        now({ injuryProneness: -T.pronenessRelief }),
         now({ wear: -T.wearRelievedByRest }),
         mod('injuryRisk', T.injuryRiskManagedLoad, 4, 'Grew into it properly'),
       ],
@@ -312,7 +317,7 @@ const youthInternational: Card = {
       label: () => 'Go to the tournament',
       detail: () => 'Scouts from everywhere watch these. Your manager will notice you went.',
       effects: () => [
-        now({ reputation: T.reputationGainShowcase, nationalStanding: T.nationalStandingGain, wear: T.wearFromHardPreSeason, managerRelationship: -T.managerTrustLoss / 2 }),
+        now({ reputation: T.reputationGainShowcase, nationalStanding: T.nationalStandingGainLarge, wear: T.wearFromHardPreSeason, managerRelationship: -T.managerTrustLoss / 2 }),
         later(T.delayShort, 'Somebody who saw you at that tournament has remembered', [
           now({ marketValue: T.marketValueBumpShopWindow }),
         ]),
@@ -323,7 +328,7 @@ const youthInternational: Card = {
       label: () => 'Do the club the favour',
       detail: () => 'A summer of pre-season with the first team, and no shirt with your country on it.',
       effects: () => [
-        now({ managerRelationship: T.managerTrustLarge, nationalStanding: -T.nationalStandingLoss / 2 }),
+        now({ managerRelationship: T.managerTrustLarge, nationalStanding: -T.nationalStandingLossLarge }),
         mod('minutes', T.minutesBonusTrusted, 2, 'Did the manager a favour'),
       ],
     },
@@ -347,7 +352,7 @@ const academyLoyalty: Card = {
       label: () => 'Do the lot',
       detail: (c) => `The supporters at ${currentClub(c).name} remember who turned up.`,
       effects: () => [
-        now({ clubStanding: here(T.clubStandingLoyaltyLarge), reputation: T.reputationGainCaptain }),
+        now({ clubStanding: here(T.clubStandingLoyaltyLarge * 1.4), reputation: T.reputationGainCaptain }),
         mod('development', T.developmentPenaltyMild, 1, 'Afternoons away from the gym'),
       ],
     },
@@ -361,8 +366,9 @@ const academyLoyalty: Card = {
       id: 'none',
       label: () => 'Tell them you are training',
       detail: () => 'Nobody signs a player for his hospital visits.',
-      effects: () => [
+      effects: (c) => [
         now({ clubStanding: here(-T.clubStandingSnub) }),
+        now(ceilingBy(c, T.ceilingOvrSmall)),
         mod('development', T.developmentBonusFocused, 2, 'Every afternoon in the gym'),
       ],
     },
@@ -394,12 +400,14 @@ const firstDebut: Card = {
       id: 'show',
       label: () => 'Try the thing you actually do',
       detail: () => 'If you are only getting twenty minutes, they should be twenty minutes of you.',
-      effects: () => [
+      effects: (c) => [
         maybe(T.gambleLandsChance, 'You do something nobody expected and the ground gets up', [
           now({ clubStanding: here(T.clubStandingDerbyHero / 2), reputation: T.reputationGainShowcase, form: T.moraleBoostLarge }),
+          now(ceilingBy(c, T.ceilingOvrLarge)),
           mod('minutes', T.minutesBonusRegularFootball, 3, 'They want to see it again'),
         ], [
           now({ managerRelationship: -T.managerTrustLoss, form: -T.moraleHitLarge }),
+          now(ceilingBy(c, -T.ceilingOvrLoss)),
           mod('minutes', T.minutesPenaltyReserves, 2, 'Back to the under-21s'),
         ]),
       ],

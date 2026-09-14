@@ -249,7 +249,7 @@ const seniorRevolt: Card = {
       label: () => 'Refuse and tell them why',
       detail: () => 'He has been straight with you. You are not doing it behind his back.',
       effects: () => [
-        now({ managerRelationship: T.managerTrustLarge, clubStanding: here(-T.clubStandingSnub) }),
+        now({ managerRelationship: T.managerTrustLarge, clubStanding: here(-T.clubStandingSnub * 1.6) }),
         mod('minutes', T.minutesBonusRegularFootball, 3, 'The one he can rely on'),
       ],
     },
@@ -320,10 +320,19 @@ const playThroughTournament: Card = {
       label: () => 'Play the tournament',
       detail: () => 'You get one or two of these. Your club get you for ten more years.',
       effects: () => [
-        now({ wear: T.wearFromPlayingInjured, injuryProneness: T.injuryPronenessFromPlayingInjured, nationalStanding: T.nationalStandingGain, managerRelationship: -T.managerTrustLoss }),
+        now({
+          wear: T.wearFromPlayingInjured,
+          injuryProneness: T.injuryPronenessFromPlayingInjured,
+          nationalStanding: T.nationalStandingGainLarge * 1.4,
+          managerRelationship: -T.managerTrustLoss,
+        }),
         mod('injuryRisk', T.injuryRiskPlayingHurt, 2, 'A tournament on a bad groin'),
         maybe(T.gambleLandsChance, 'You were the best player in the squad and everybody saw it', [
-          now({ reputation: T.reputationGainShowcase * 1.5, marketValue: T.marketValueBumpShopWindow }),
+          now({
+            reputation: T.reputationGainShowcase * 1.5,
+            marketValue: T.marketValueBumpShopWindow,
+            nationalStanding: T.nationalStandingGainLarge,
+          }),
         ], [
           now({ attributes: { pace: -T.attributeLossSmall } }),
           mod('minutes', T.minutesPenaltyInjured, 1, 'Broke down at the tournament'),
@@ -335,7 +344,11 @@ const playThroughTournament: Card = {
       label: () => 'Withdraw and get it fixed',
       detail: () => 'Six weeks, a summer at home, and a squad that names somebody else.',
       effects: () => [
-        now({ nationalStanding: -T.nationalStandingLoss, managerRelationship: T.managerTrustLarge, wear: -T.wearRelievedByRest }),
+        now({
+          nationalStanding: -T.nationalStandingLossLarge * 1.5,
+          managerRelationship: T.managerTrustLarge,
+          wear: -T.wearRelievedByRest,
+        }),
         mod('injuryRisk', T.injuryRiskManagedLoad, 3, 'Had the summer to get right'),
         mod('minutes', T.minutesBonusTrusted, 2, 'Fit in August for once'),
       ],
@@ -395,7 +408,7 @@ const tournamentSquad: Card = {
       label: () => 'Go, and carry the bags',
       detail: () => 'A tournament is a tournament, even from the bench.',
       effects: () => [
-        now({ nationalStanding: T.nationalStandingGain, wear: T.wearFromHardPreSeason * 1.5, reputation: T.reputationGainCaptain }),
+        now({ nationalStanding: T.nationalStandingGainLarge, wear: T.wearFromHardPreSeason * 1.5, reputation: T.reputationGainCaptain }),
         mod('minutes', T.minutesPenaltySlight, 1, 'No pre-season'),
       ],
     },
@@ -404,7 +417,7 @@ const tournamentSquad: Card = {
       label: () => 'Tell them you need the summer',
       detail: () => 'A proper rest, and a manager who will remember you asked.',
       effects: () => [
-        now({ nationalStanding: -T.nationalStandingLoss, wear: -T.wearRelievedByRest }),
+        now({ nationalStanding: -T.nationalStandingLossLarge, wear: -T.wearRelievedByRest }),
         mod('minutes', T.minutesBonusTrusted, 2, 'Had a summer off'),
         mod('injuryRisk', T.injuryRiskManagedLoad, 2, 'Properly rested'),
       ],
@@ -431,7 +444,7 @@ const captainCountry: Card = {
       label: () => 'Take it',
       detail: () => 'Your name on the team sheet first, for as long as it lasts.',
       effects: () => [
-        now({ nationalStanding: T.nationalStandingGain * 1.5, reputation: T.reputationGainShowcase }),
+        now({ nationalStanding: T.nationalStandingGainLarge * 1.3, reputation: T.reputationGainShowcase }),
         mod('standing', T.standingCaptain, 6, 'Captains his country'),
         later(T.delayShort, 'A bad qualifying campaign, and it is your face on the back pages', [
           maybe(0.5, 'The criticism sticks to the captain', [now({ form: -T.moraleHitLarge, reputation: -T.reputationGainCaptain })]),
@@ -443,7 +456,7 @@ const captainCountry: Card = {
       label: () => 'Suggest someone else',
       detail: () => 'Keep playing, keep your head down, keep out of the politics.',
       effects: () => [
-        now({ nationalStanding: -T.nationalStandingLoss / 3 }),
+        now({ nationalStanding: -T.nationalStandingLossLarge }),
         mod('development', T.developmentBonusFocused, 2, 'Nothing to think about but football'),
       ],
     },
@@ -469,7 +482,11 @@ const businessOutsideFootball: Card = {
       effects: () => [
         now({ wage: 0.82, form: -T.moraleHitSmall }),
         mod('development', T.developmentPenaltyMild, 2, 'Distracted'),
-        later(T.delayLong, 'The thing you invested in has come good', [now({ form: T.moraleBoostLarge })]),
+        later(T.delayLong, 'The thing you put your money into', [
+          maybe(T.likelyChance, 'It came good, and it pays better than football did', [
+            now({ form: T.moraleBoostLarge, wage: T.wageUpliftLarge }),
+          ], [now({ form: -T.moraleHitLarge, wage: T.wageCutLoyalty })]),
+        ]),
       ],
     },
     {
@@ -503,7 +520,11 @@ const sportsScience: Card = {
       label: () => 'Do everything they ask',
       detail: () => 'Fewer hard sessions, and a manager who thinks you are soft.',
       effects: () => [
-        now({ wear: -T.wearRelievedByRest, managerRelationship: -T.managerTrustLoss / 2 }),
+        now({
+          wear: -T.wearRelievedByRest,
+          injuryProneness: -T.pronenessRelief,
+          managerRelationship: -T.managerTrustLoss / 2,
+        }),
         mod('injuryRisk', T.injuryRiskRoundedAthlete, 6, 'Load managed'),
         mod('development', T.developmentPenaltyMild, 2, 'Lighter training'),
       ],
@@ -513,7 +534,11 @@ const sportsScience: Card = {
       label: () => 'Train the way you always have',
       detail: () => 'The manager will like it. Your body has an opinion too.',
       effects: () => [
-        now({ wear: T.wearFromHardPreSeason, managerRelationship: T.managerTrustLarge }),
+        now({
+          wear: T.wearFromHardPreSeason,
+          injuryProneness: T.pronenessLasting / 2,
+          managerRelationship: T.managerTrustLarge,
+        }),
         mod('development', T.developmentBonusFocused, 3, 'Hard training'),
         mod('injuryRisk', 1.2, 4, 'Nothing managed'),
       ],

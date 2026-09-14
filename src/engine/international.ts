@@ -90,7 +90,7 @@ export function simulateInternationalSeason(
   // manager has moved on, whatever his rating says. Without this the whole
   // international side of the game was decided by OVR alone, and every card
   // that traded on the manager's goodwill was spending a currency nothing read.
-  const standingEdge = ((national.standing - 45) / 100) * 12;
+  const standingEdge = ((national.standing - 45) / 100) * 20;
 
   // Being in the squad at all depends on playing club football.
   if (score + standingEdge < threshold || seasonRecord.minutes < 900) return idle;
@@ -99,7 +99,7 @@ export function simulateInternationalSeason(
   const target = clamp(35 + margin * 4.5, 0, 100);
   // Slower convergence than performance alone would give: a reputation with an
   // international manager is built and lost over seasons, not in one.
-  const standing = clamp(national.standing + (target - national.standing) * 0.35, 0, 100);
+  const standing = clamp(national.standing + (target - national.standing) * 0.28, 0, 100);
 
   const tournamentId = tournamentForYear(world, nation.confederation, state.year);
   const baseCaps = 3.5 + (standing / 100) * 6.5 + (tournamentId ? 3 : 0);

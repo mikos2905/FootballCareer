@@ -3,7 +3,7 @@ import { ceilingOvr } from './ratings';
 import { clamp, substream } from './rng';
 import { scoreCareer, type ScoreComponents, type ScoreDetail } from './scoring';
 import type { CareerState } from './types';
-import { closingLine, findTurningPoints, verdictFragments, type TurningPoints } from './verdict';
+import { closingLine, findTurningPoints, plural, verdictFragments, type TurningPoints } from './verdict';
 import type { World } from './world';
 
 /**
@@ -179,18 +179,18 @@ function composeVerdict(
   const opening = (() => {
     switch (tier) {
       case 'statue':
-        return `${points.homeSeasons} seasons at ${home}, and he never once went looking for anywhere else. There will be a bronze of him outside the ${home} ground and children who never saw him play will be told who he was.`;
+        return `${plural(points.homeSeasons, 'season')} at ${home}, and he never once went looking for anywhere else. There will be a bronze of him outside the ${home} ground and children who never saw him play will be told who he was.`;
       case 'global-superstar':
         return `He got as high as this game goes — ${shape.peakOvr} at his peak, and a name that meant something in countries he never played in.`;
       case 'serial-winner':
-        return `${shape.totals.trophyCount} trophies. He went where the medals were, collected them, and moved on before anyone got sentimental.`;
+        return `${plural(shape.totals.trophyCount, 'trophy', 'trophies')}. He went where the medals were, collected them, and moved on before anyone got sentimental.`;
       case 'cult-hero':
-        return `Never the best player in the league, and at ${home} that was never the point. ${shape.homeSeasons} seasons there, and they still sing about him.`;
+        return `Never the best player in the league, and at ${home} that was never the point. ${plural(shape.homeSeasons, 'season')} there, and they still sing about him.`;
       case 'what-might-have-been':
         return `The coaches who watched ${name} at sixteen thought they were looking at a ${shape.ceiling}. He finished as a ${shape.peakOvr}. Somewhere in between is the career he did not have.`;
       case 'journeyman':
       default:
-        return `${shape.totals.appearances} appearances across ${shape.totals.clubsPlayedFor} clubs. Nobody is building a statue, and nobody asked him to.`;
+        return `${plural(shape.totals.appearances, 'appearance')} across ${plural(shape.totals.clubsPlayedFor, 'club')}. Nobody is building a statue, and nobody asked him to.`;
     }
   })();
 

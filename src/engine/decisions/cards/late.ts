@@ -124,7 +124,7 @@ const roleChange: Card = {
       label: () => 'Take the role',
       detail: () => "Respected, useful, and on the bench at three o'clock.",
       effects: () => [
-        now({ clubStanding: here(T.clubStandingLoyaltyLarge), managerRelationship: T.managerTrustLarge }),
+        now({ clubStanding: here(T.clubStandingLoyaltyBonus), managerRelationship: T.managerTrustLarge }),
         mod('standing', T.standingManagersMan, 5, 'Senior professional'),
         mod('minutes', T.minutesPenaltyVeteranRole, 4, 'Twenty minutes a game'),
       ],
@@ -136,7 +136,7 @@ const roleChange: Card = {
       effects: () => [
         now({ managerRelationship: -T.managerTrustLoss, form: T.moraleBoostSmall, wear: T.wearFromHardPreSeason }),
         maybe(T.gambleLandsChance, 'You win the shirt back and hold it', [
-          mod('minutes', T.minutesBonusRegularFootball, 3, 'Won it back at thirty-one'),
+          mod('minutes', T.minutesBonusRegularFootball, 5, 'Won it back at thirty-one'),
           now({ clubStanding: here(T.clubStandingLoyaltyBonus) }),
         ], [
           mod('minutes', T.minutesPenaltyReserves, 3, 'Out of the side and out of favour'),
@@ -174,7 +174,8 @@ const playerCoach: Card = {
       label: () => 'Tell them to ask you again when you stop',
       detail: () => 'You are a player until you are not.',
       effects: () => [
-        now({ form: T.moraleBoostSmall }),
+        now({ form: T.moraleBoostSmall, wage: T.wageUpliftModest }),
+        mod('minutes', T.minutesBonusTrusted, 4, 'Still a player, and picked like one'),
         mod('development', T.developmentBonusFocused, 2, 'Still a player'),
       ],
     },
@@ -198,7 +199,7 @@ const chronicProblem: Card = {
       detail: () => 'Saturdays, for as long as it lasts.',
       effects: () => [
         mod('minutes', T.minutesBonusTrusted, 3, 'Getting through on injections'),
-        now({ wear: T.wearFromPlayingInjured }),
+        now({ wear: T.wearFromPlayingInjured, injuryProneness: T.pronenessLasting }),
         mod('injuryRisk', T.injuryRiskPlayingHurt, 3, 'Masking a chronic problem'),
       ],
     },
@@ -209,7 +210,7 @@ const chronicProblem: Card = {
       effects: () => [
         mod('minutes', T.minutesPenaltyVeteranRole, 3, 'Managed through the week'),
         mod('injuryRisk', T.injuryRiskManagedLoad, 5, 'Load managed'),
-        now({ wear: -T.wearRelievedByRest }),
+        now({ wear: -T.wearRelievedByRest, injuryProneness: -T.pronenessRelief }),
       ],
     },
     {
@@ -335,7 +336,7 @@ const returnToFirstClub: Card = {
       detail: () => 'Finish where you started, in front of people who watched you start.',
       effects: (): Effect[] => [
         moveTo(0, 'loyalty'),
-        now({ clubStanding: here(T.clubStandingTestimonial) }),
+        now({ clubStanding: here(T.clubStandingTestimonial * 2.2) }),
         mod('standing', T.standingOneOfTheirOwn, 6, 'Came home'),
         mod('minutes', T.minutesBonusRegularFootball, 3, 'They will play him'),
       ],
@@ -344,7 +345,11 @@ const returnToFirstClub: Card = {
       id: 'stay',
       label: () => `Stay at ${currentClub(c).name}`,
       detail: () => 'A better level, and a sentimental story you decline to be in.',
-      effects: (): Effect[] => [stay, now({ clubStanding: here(T.clubStandingLoyaltyBonus) })],
+      effects: (): Effect[] => [
+        stay,
+        now({ clubStanding: here(T.clubStandingLoyaltyBonus) }),
+        mod('minutes', T.minutesPenaltyVeteranRole, 3, 'Staying where the football is running out'),
+      ],
     },
   ],
 };
@@ -369,7 +374,8 @@ const finalContract: Card = {
       label: () => 'Take the appearance deal',
       detail: () => 'Paid to play. Nothing if you do not.',
       effects: () => [
-        now({ contractYears: T.contractYearsFinal, wage: 0.7 }),
+        now({ contractYears: T.contractYearsFinal, wage: T.wageAppearanceDeal }),
+        mod('injuryRisk', T.injuryRiskPlayingHurt, 2, 'Playing for the appearance money'),
         mod('minutes', T.minutesBonusTrusted, 2, 'Every incentive to be fit'),
         now({ wear: T.wearFromHardPreSeason }),
       ],
@@ -379,7 +385,7 @@ const finalContract: Card = {
       label: () => 'Take the flat wage',
       detail: () => 'Less on a good year, something on a bad one.',
       effects: () => [
-        now({ contractYears: T.contractYearsFinal, wage: T.wageCutLoyalty }),
+        now({ contractYears: T.contractYearsFinal * 2, wage: T.wageSecurityDeal }),
         mod('injuryRisk', T.injuryRiskManagedLoad, 2, 'Nothing to prove week to week'),
       ],
     },
@@ -484,8 +490,8 @@ const bodySaysNo: Card = {
       label: () => 'Keep going while you still can',
       detail: () => 'There is time to be forty. There is no more time to be this.',
       effects: () => [
-        now({ wear: T.wearFromPlayingInjured }),
-        mod('minutes', T.minutesBonusTrusted, 2, 'Playing on'),
+        now({ wear: T.wearFromPlayingInjured, injuryProneness: T.pronenessLasting, wage: T.wageUpliftModest }),
+        mod('minutes', T.minutesBonusRegularFootball, 4, 'Playing on while he still can'),
         mod('injuryRisk', T.injuryRiskPlayingHurt, 3, 'Nothing left in the tank'),
       ],
     },
@@ -554,7 +560,11 @@ const comeHomeToStop: Card = {
       id: 'stay',
       label: () => `Finish at ${currentClub(c).name}`,
       detail: () => 'Where you actually are, rather than where the story would prefer.',
-      effects: (): Effect[] => [stay, now({ clubStanding: here(T.clubStandingLoyaltyBonus) })],
+      effects: (): Effect[] => [
+        stay,
+        now({ clubStanding: here(T.clubStandingLoyaltyLarge * 1.5) }),
+        mod('standing', T.standingOneOfTheirOwn, 5, 'Saw it out where he belonged'),
+      ],
     },
   ],
 };
@@ -621,7 +631,7 @@ const earlyRetirement: Card = {
       label: () => 'Play on, but properly managed',
       detail: () => 'Half the games, all of the seasons you have left.',
       effects: (): Effect[] => [
-        mod('minutes', T.minutesPenaltyVeteranRole, 5, 'Half a season a season'),
+        mod('minutes', T.minutesPenaltyInjured, 5, 'Half a season a season'),
         mod('injuryRisk', T.injuryRiskRoundedAthlete, 6, 'Managed carefully'),
         now({ wear: -T.wearRelievedByRest }),
       ],

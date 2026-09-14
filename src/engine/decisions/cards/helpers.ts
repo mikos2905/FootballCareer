@@ -1,5 +1,6 @@
 import { clubLeagueId, clubStrength } from '../../league';
 import { position } from '../../positions';
+import { ceilingOvr } from '../../ratings';
 import { generateLoanOffers, generateOffers } from '../../transfers';
 import type { CareerState, TransferOffer } from '../../types';
 import type { World } from '../../world';
@@ -117,10 +118,19 @@ function spread(c: Ctx, ovrPoints: number): Partial<Record<AttributeKey, number>
  * A ceiling change denominated in OVR rather than in attribute points, spread
  * across what this player's position is rated on. Positive raises what he could
  * become; negative closes it off.
+ *
+ * A gain shrinks as the headroom does. Elite coaching turns a good prospect into
+ * a very good one; it does not turn a generational talent into a better
+ * generational talent, and without this the cards stacked ten points onto the
+ * players who least needed them and put the top of the rating distribution out
+ * of band. Losses are not scaled: the ceiling can always be thrown away.
  */
-export const ceilingBy = (c: Ctx, ovrPoints: number): ImmediateChange => ({
-  ceiling: spread(c, ovrPoints),
-});
+export const ceilingBy = (c: Ctx, ovrPoints: number): ImmediateChange => {
+  if (ovrPoints <= 0) return { ceiling: spread(c, ovrPoints) };
+  const current = ceilingOvr(c.state.player.ceiling, c.state.player.position);
+  const headroom = Math.max(0, Math.min(1, (99 - current) / 26));
+  return { ceiling: spread(c, ovrPoints * headroom) };
+};
 
 /** The same, applied to what he is now rather than what he could be. */
 export const attributesBy = (c: Ctx, ovrPoints: number): ImmediateChange => ({

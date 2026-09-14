@@ -2,7 +2,21 @@ import { clubStrength } from '../../league';
 import { buildOffer, isVisibleTo } from '../../transfers';
 import { TUNABLES as T } from '../tunables';
 import type { Card, Effect } from '../types';
-import { currentClub, focus, here, later, lastSeason, maybe, mod, money, moveTo, now, stay } from './helpers';
+import {
+  attributesBy,
+  ceilingBy,
+  currentClub,
+  focus,
+  here,
+  later,
+  lastSeason,
+  maybe,
+  mod,
+  money,
+  moveTo,
+  now,
+  stay,
+} from './helpers';
 
 /**
  * Breakthrough, nineteen to twenty-three.
@@ -101,9 +115,10 @@ const stepUpOrConsolidate: Card = {
         id: 'go',
         label: () => (offer ? `Sign for ${offer.clubName}` : 'Take the step up'),
         detail: () => 'A better level, and you have to prove it all over again.',
-        effects: (): Effect[] => [
+        effects: (c): Effect[] => [
           moveTo(0, 'ambition'),
           mod('development', T.developmentBonusEliteCoaching, 3, 'Better level, better football'),
+          now(ceilingBy(c, T.ceilingOvrLarge)),
           now({ reputation: T.reputationGainShowcase / 2 }),
         ],
       },
@@ -111,10 +126,11 @@ const stepUpOrConsolidate: Card = {
         id: 'consolidate',
         label: (x) => `Give ${currentClub(x).name} one more year`,
         detail: () => 'Another season of being the best player in the building.',
-        effects: (): Effect[] => [
+        effects: (c): Effect[] => [
           stay,
           now({ clubStanding: here(T.clubStandingLoyaltyLarge), managerRelationship: T.managerTrustGain }),
           mod('minutes', T.minutesBonusRegularFootball, 2, 'The best player here'),
+          now(ceilingBy(c, -T.ceilingOvrLoss / 2)),
           later(T.delayMedium, 'That club moved on and bought somebody else', [
             now({ marketValue: T.marketValueDropStagnation }),
           ]),
@@ -192,8 +208,9 @@ const loanRecall: Card = {
       id: 'go-back',
       label: (c) => `Go back to ${c.world.club(c.state.parentClubId ?? c.state.clubId).name}`,
       detail: () => 'The club that owns you, and the level you are trying to reach.',
-      effects: (): Effect[] => [
+      effects: (c): Effect[] => [
         now({ contractYears: 0, managerRelationship: T.managerTrustGain }),
+        now(ceilingBy(c, T.ceilingOvrSmall)),
         mod('minutes', T.minutesPenaltySlight, 1, 'Back in the squad, not the side'),
         mod('development', T.developmentBonusEliteCoaching, 2, 'Training at the higher level'),
       ],
@@ -202,8 +219,9 @@ const loanRecall: Card = {
       id: 'see-it-out',
       label: () => 'Ask to see the loan out',
       detail: () => 'Six more months of playing. They will find someone else for the gap.',
-      effects: (): Effect[] => [
+      effects: (c): Effect[] => [
         mod('minutes', T.minutesBonusRegularFootball, 2, 'Playing every week'),
+        now(attributesBy(c, T.attributeOvrSmall)),
         now({ managerRelationship: -T.managerTrustLoss }),
         later(T.delayShort, 'The club that owns you made other plans while you were away', [
           mod('minutes', T.minutesPenaltyReserves, 1, 'Came back to a closed door'),
@@ -317,8 +335,9 @@ const specialistCoach: Card = {
       id: 'hire',
       label: () => 'Pay for him yourself',
       detail: () => 'Your money, your mornings, and the club staff will hear about it.',
-      effects: () => [
-        now({ wage: 0.92, ceiling: { shooting: T.ceilingGainSpecialist, dribbling: T.ceilingGainSpecialist / 2 }, managerRelationship: -T.managerTrustLoss / 2 }),
+      effects: (c) => [
+        now({ wage: T.wageCutSmall, managerRelationship: -T.managerTrustLoss / 2 }),
+        now(ceilingBy(c, T.ceilingOvrLarge)),
         focus(['shooting', 'dribbling'], 3, 'Specialist work'),
       ],
     },
@@ -326,8 +345,9 @@ const specialistCoach: Card = {
       id: 'club',
       label: () => 'Work with the club staff instead',
       detail: () => 'They are not as good. They are also the ones who talk to the manager.',
-      effects: () => [
-        now({ managerRelationship: T.managerTrustGain, ceiling: { passing: T.ceilingGainCoaching } }),
+      effects: (c) => [
+        now({ managerRelationship: T.managerTrustGain }),
+        now(ceilingBy(c, T.ceilingOvrSmall)),
         mod('minutes', T.minutesBonusTrusted, 2, 'In with the coaching staff'),
       ],
     },
@@ -352,7 +372,7 @@ const firstSeriousInjury: Card = {
       effects: () => [
         mod('minutes', T.minutesPenaltyInjured, 2, 'Long rehabilitation'),
         mod('development', T.developmentPenaltyBenchSeason, 2, 'A year without football'),
-        now({ wear: T.wearFromPlayingInjured }),
+        now({ wear: T.wearFromPlayingInjured, injuryProneness: -T.pronenessRelief }),
         mod('injuryRisk', T.injuryRiskManagedLoad, 6, 'Repaired properly'),
       ],
     },
@@ -435,7 +455,7 @@ const u21OrSeniors: Card = {
       label: () => 'Go with the seniors and carry the bags',
       detail: () => 'Training with better players, and possibly not getting on the pitch.',
       effects: () => [
-        now({ nationalStanding: T.nationalStandingGain, reputation: T.reputationGainShowcase / 2, wear: T.wearFromHardPreSeason }),
+        now({ nationalStanding: T.nationalStandingGainLarge, reputation: T.reputationGainShowcase / 2, wear: T.wearFromHardPreSeason }),
         mod('development', T.developmentBonusEliteCoaching, 2, 'Training with internationals'),
       ],
     },
@@ -446,7 +466,7 @@ const u21OrSeniors: Card = {
       effects: () => [
         now({ form: T.moraleBoostLarge, reputation: T.reputationGainCaptain }),
         mod('standing', T.standingCaptain, 4, 'Captained his country at a tournament'),
-        now({ nationalStanding: -T.nationalStandingLoss / 3 }),
+        now({ nationalStanding: -T.nationalStandingLossLarge / 2 }),
       ],
     },
   ],

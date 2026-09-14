@@ -350,8 +350,13 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
 
   // An option that ends the career is worse on every cumulative axis by
   // definition — you stop accruing appearances, trophies and caps the moment
-  // you stop playing. Flagging it "dead" says nothing about the card, so it is
-  // exempt from that check. It is still held to the dominance check.
+  // you stop playing.
+  //
+  // So it is exempt from the dead check, and it is also removed from the
+  // comparison when judging dominance: carrying on is not a dominant strategy
+  // just because it beats stopping on every axis that counts upwards. On a card
+  // whose only other option is to retire, that flag fired every time and said
+  // nothing about the card.
   const retiringOptions = new Set(
     def
       .options({ state: reference, world, subject: samples[0]!.presented.subject })
@@ -386,7 +391,10 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
 
     // Dominant: strictly better than every other option on every axis.
     for (const candidate of meansByOption) {
-      const others = meansByOption.filter((o) => o.id !== candidate.id);
+      const others = meansByOption.filter(
+        (o) => o.id !== candidate.id && !retiringOptions.has(o.id),
+      );
+      if (others.length === 0) continue;
       const dominant = others.every((other) => AXES.every((axis) => candidate.m[axis] >= other.m[axis]))
         && others.some((other) => AXES.some((axis) => candidate.m[axis] > other.m[axis]));
       const dead = others.every((other) => AXES.every((axis) => candidate.m[axis] <= other.m[axis]))
@@ -480,12 +488,24 @@ export function analyseCard(cardId: string, world: World, opts: AnalyseOptions):
   }
 
   const flags: string[] = [];
-  for (const option of options) {
-    if (option.dominantShare > thresholds.dominance) flags.push(`DOMINANT:${option.optionId}`);
-    if (option.deadShare > thresholds.dead) flags.push(`DEAD:${option.optionId}`);
+
+  // Dominance is only worth asking about once the card moves something.
+  //
+  // The check is "better on every axis", and the axes move together: an option
+  // that is one per cent better is better on all eight, so a card whose options
+  // are indistinguishable reads as perfectly dominant. That is not a balance
+  // problem, it is the same nothing the fake-decision check already found, and
+  // reporting it twice sends you off tuning a card whose real fault is that it
+  // does not matter either way.
+  if (strongestAxis.effectSize < thresholds.minEffectSize) {
+    flags.push('FAKE');
+  } else {
+    for (const option of options) {
+      if (option.dominantShare > thresholds.dominance) flags.push(`DOMINANT:${option.optionId}`);
+      if (option.deadShare > thresholds.dead) flags.push(`DEAD:${option.optionId}`);
+    }
+    if (strongestAxis.t < thresholds.minT) flags.push('noisy');
   }
-  if (strongestAxis.effectSize < thresholds.minEffectSize) flags.push('FAKE');
-  else if (strongestAxis.t < thresholds.minT) flags.push('noisy');
 
   return {
     cardId,

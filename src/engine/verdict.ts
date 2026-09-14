@@ -93,6 +93,11 @@ export function findTurningPoints(state: CareerState, world: World): TurningPoin
  * Each returns null when the career has nothing to say on that subject, so the
  * frame can ask for four and take whatever it gets.
  */
+/** "1 goal", "7 goals" — the verdict is the one paragraph people read closely. */
+export function plural(n: number, noun: string, many = `${noun}s`): string {
+  return `${n} ${n === 1 ? noun : many}`;
+}
+
 export function verdictFragments(state: CareerState, world: World, points: TurningPoints): string[] {
   const out: string[] = [];
   const name = state.player.surname;
@@ -100,7 +105,7 @@ export function verdictFragments(state: CareerState, world: World, points: Turni
   if (points.breakthrough) {
     const s = points.breakthrough;
     out.push(
-      `He arrived at ${s.age} — ${s.appearances} games for ${s.clubName} in ${s.year}, in a ${s.leagueName} side that finished ${s.leaguePosition || 'nowhere in particular'}.`,
+      `He arrived at ${s.age} — ${plural(s.appearances, 'game')} for ${s.clubName} in ${s.year}, in a ${s.leagueName} side that finished ${s.leaguePosition || 'nowhere in particular'}.`,
     );
   } else if (points.firstSeason) {
     out.push(`He never really arrived. The football was always somebody else's.`);
@@ -109,8 +114,8 @@ export function verdictFragments(state: CareerState, world: World, points: Turni
   if (points.best && points.best.averageRating >= 7) {
     const s = points.best;
     const line = s.keeper
-      ? `${s.keeper.cleanSheets} clean sheets`
-      : `${s.goals} goals and ${s.assists} assists`;
+      ? `${plural(s.keeper.cleanSheets, 'clean sheet')}`
+      : `${plural(s.goals, 'goal')} and ${plural(s.assists, 'assist')}`;
     out.push(`The year it all worked was ${s.year}: ${line} for ${s.clubName}, at ${s.averageRating.toFixed(1)} a game.`);
   }
 
@@ -129,7 +134,7 @@ export function verdictFragments(state: CareerState, world: World, points: Turni
     const injury = s.injuries.sort((a, b) => b.matchesMissed - a.matchesMissed)[0];
     out.push(
       injury
-        ? `The ${injury.label.toLowerCase()} at ${s.age} cost him ${s.matchesMissed} matches, and ${s.year} is a hole in the record.`
+        ? `The ${injury.label.toLowerCase()} at ${s.age} cost him ${plural(s.matchesMissed, 'match', 'matches')}, and ${s.year} is a hole in the record.`
         : `${s.year} was lost to injury almost entirely.`,
     );
   }
@@ -143,8 +148,8 @@ export function verdictFragments(state: CareerState, world: World, points: Turni
     const nation = world.nation(state.national.nationId ?? state.player.nationId).name;
     out.push(
       state.national.tournamentsWon > 0
-        ? `${state.national.caps} caps for ${nation}, and a tournament.`
-        : `${state.national.caps} caps for ${nation}, and never a tournament won.`,
+        ? `${plural(state.national.caps, 'cap')} for ${nation}, and a tournament.`
+        : `${plural(state.national.caps, 'cap')} for ${nation}, and never a tournament won.`,
     );
   } else if (state.national.caps === 0 && state.peakOvr >= 72) {
     out.push(`${world.nation(state.player.nationId).name} never called, which is the part he will think about.`);
@@ -152,12 +157,12 @@ export function verdictFragments(state: CareerState, world: World, points: Turni
 
   if (points.homeClubId && points.homeSeasons >= 5) {
     out.push(
-      `${points.homeSeasons} seasons at ${world.club(points.homeClubId).name} — long enough for the people there to think of him as theirs.`,
+      `${plural(points.homeSeasons, 'season')} at ${world.club(points.homeClubId).name} — long enough for the people there to think of him as theirs.`,
     );
   }
 
   if (points.clubsPlayedFor >= 7) {
-    out.push(`${points.clubsPlayedFor} clubs in ${state.seasons.length} seasons. He was always somebody's new signing.`);
+    out.push(`${plural(points.clubsPlayedFor, 'club')} in ${plural(state.seasons.length, 'season')}. He was always somebody's new signing.`);
   }
 
   void name;

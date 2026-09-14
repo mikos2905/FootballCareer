@@ -82,6 +82,11 @@ export const TUNABLES = {
   wageUpliftLarge: 1.6,
   wageUpliftGulf: 3.6,
   wageCutLoyalty: 0.88,
+  /** Paid for what you play rather than for turning up. */
+  wageAppearanceDeal: 1.35,
+  wageSecurityDeal: 0.78,
+  /** Paying for something out of your own pocket. */
+  wageCutSmall: 0.92,
   marketValueBumpShopWindow: 1.18,
   marketValueDropStagnation: 0.82,
   marketValueDropForgotten: 0.72,
@@ -96,6 +101,13 @@ export const TUNABLES = {
   // -- National team --------------------------------------------------------
   nationalStandingGain: 14,
   nationalStandingLoss: 18,
+  /**
+   * Larger moves, for the decisions an international manager actually
+   * remembers. Standing gates selection now, not just how many caps follow it,
+   * so these are worth caps rather than flavour.
+   */
+  nationalStandingGainLarge: 24,
+  nationalStandingLossLarge: 22,
 
   // -- Contract -------------------------------------------------------------
   contractYearsShort: 2,
@@ -116,6 +128,26 @@ export const TUNABLES = {
   ceilingGainCoaching: 6,
   ceilingGainSpecialist: 9,
   ceilingLossNeglect: 6,
+
+  /**
+   * Ceiling moves written in OVR rather than in attribute points.
+   *
+   * `ceiling: { passing: 6 }` on a striker moves his rating by four tenths of a
+   * point, because passing is seven per cent of a striker's OVR. These go
+   * through ceilingBy(), which spreads them across the attributes the player's
+   * position is actually rated on, so the same card means the same thing for a
+   * goalkeeper and a winger.
+   */
+  ceilingOvrSmall: 1.2,
+  ceilingOvrLarge: 2.3,
+  ceilingOvrLoss: 2.2,
+  attributeOvrSmall: 1.2,
+  attributeOvrLarge: 2.4,
+
+  // -- Lasting physical cost -------------------------------------------------
+  /** Looking after the body while it is still growing, and the reverse. */
+  pronenessRelief: 14,
+  pronenessLasting: 16,
 
   // -- Attributes ------------------------------------------------------------
   attributeGainSmall: 3,

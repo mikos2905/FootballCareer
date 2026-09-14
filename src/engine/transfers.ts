@@ -160,9 +160,28 @@ export function generateOffers(rng: Rng, inputs: OfferInputs): TransferOffer[] {
     // The strongest leagues shop from a shortlist. A good player nobody has
     // heard of does not get a call from one, however capable he is.
     const eliteBar =
-      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 56 + club.prestige * 0.25 : true;
+      league.strength >= 0.85 ? player.reputation + player.ovr * 0.35 >= 51 + club.prestige * 0.25 : true;
 
-    return affordable && known && eliteBar && (level || moneyTalks) && league.tier <= (player.ovr >= 68 ? 2 : 3);
+    // Three seasons without football and nobody remembers what he was. Only a
+    // club a good way below where he used to be will look at him, which is how
+    // a career actually peters out — not a decision, just the phone not
+    // ringing, and eventually not ringing anywhere.
+    //
+    // Age matters here: the counter runs from sixteen, and an academy player
+    // under four hundred and fifty minutes is having a normal year, not
+    // disappearing. Without the age gate this fired on ordinary teenagers and
+    // ended one career in fourteen before it started.
+    const forgotten =
+      player.age >= 23 && state.barrenSeasons >= 3 && clubLevel > player.ovr - 2;
+
+    return (
+      affordable &&
+      known &&
+      eliteBar &&
+      !forgotten &&
+      (level || moneyTalks) &&
+      league.tier <= (player.ovr >= 68 ? 2 : 3)
+    );
   });
 
   if (candidates.length === 0) return [];

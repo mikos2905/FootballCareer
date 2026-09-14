@@ -162,13 +162,17 @@ export const testimonialOrOneMore: Card = {
           kind: 'immediate',
           change: {
             contractYears: T.contractYearsFinal,
-            clubStanding: { target: { kind: 'current' }, amount: T.clubStandingLoyaltyBonus },
+            clubStanding: { target: { kind: 'current' }, amount: T.clubStandingLoyaltyLarge * 1.6 },
             wage: T.wageCutLoyalty,
           },
         },
         {
           kind: 'modifier',
           modifier: { channel: 'minutes', value: T.minutesPenaltyVeteranRole, seasons: 2, label: 'Kept on out of respect' },
+        },
+        {
+          kind: 'modifier',
+          modifier: { channel: 'standing', value: T.standingOneOfTheirOwn, seasons: 5, label: 'Stayed to the end' },
         },
       ],
     },
